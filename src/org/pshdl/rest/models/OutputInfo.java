@@ -28,10 +28,11 @@ package org.pshdl.rest.models;
 
 import java.io.*;
 
+import org.pshdl.rest.models.utils.*;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.*;
 import com.google.common.io.*;
-import com.sun.jersey.core.util.*;
 import com.wordnik.swagger.annotations.*;
 
 @ApiModel("Information about addtional output files")
@@ -102,7 +103,7 @@ public class OutputInfo {
 	public void setContents(String content) throws IOException {
 		byte[] ba = content.getBytes(Charsets.UTF_8);
 		if (!isString()) {
-			ba = Base64.decode(ba);
+			ba = Base64.base64ToByteArray(content);
 		}
 		Files.write(ba, new File(file));
 	}
