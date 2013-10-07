@@ -24,6 +24,7 @@ public class Message<T> {
 
 	private String subject;
 	private String msgType;
+	private long timeStamp;
 	private T contents;
 
 	public Message() {
@@ -33,6 +34,7 @@ public class Message<T> {
 		this.msgType = msgType;
 		this.subject = subject;
 		this.contents = content;
+		this.setTimeStamp(System.currentTimeMillis());
 	}
 
 	@JsonProperty
@@ -56,6 +58,16 @@ public class Message<T> {
 	}
 
 	@JsonProperty
+	@ApiModelProperty(value = "The time when this message was created")
+	public long getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	@JsonProperty
 	@ApiModelProperty(value = "The actual payload of this message")
 	public T getContents() {
 		return contents;
@@ -72,6 +84,8 @@ public class Message<T> {
 		builder.append(getSubject());
 		builder.append(", msgType=");
 		builder.append(getMsgType());
+		builder.append(", timeStamp=");
+		builder.append(getTimeStamp());
 		builder.append(", contents=");
 		builder.append(getContents());
 		builder.append("]");

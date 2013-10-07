@@ -24,42 +24,32 @@
  * Contributors:
  *     Karsten Becker - initial API and implementation
  ******************************************************************************/
-package org.pshdl.rest.models;
+package org.pshdl.rest.models.utils;
 
-import java.util.*;
+public class RestConstants {
+	public static final String BASEURL = "http://api.pshdl.org";
+	public static final String VERSION = "v0.1";
+	public static final String BASEPATH = "/api/" + VERSION;
+	public static final String WORKSPACE = "/workspace";
+	public static final String COMPILER = "/compiler";
+	public static final String STREAMING = "/streaming";
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
-import com.wordnik.swagger.annotations.*;
+	public static final String OUTPUTDIR = "src-gen";
 
-@ApiModel("A container for all CompileInfo objects")
-public class CompileContainer {
-
-	private Set<CompileInfo> compileResults;
-
-	public CompileContainer() {
-		compileResults = Sets.newLinkedHashSet();
+	public static String getWorkspaceURI(String wid) {
+		return RestConstants.BASEPATH + RestConstants.WORKSPACE + "/" + wid;
 	}
 
-	public CompileContainer(List<CompileInfo> res) {
-		setCompileResults(new HashSet<CompileInfo>(res));
+	public static String getWorkspaceGenOutputURI(String wid) {
+		return RestConstants.BASEPATH + RestConstants.WORKSPACE + "/" + wid + "/" + RestConstants.OUTPUTDIR;
 	}
 
-	@JsonProperty
-	public Set<CompileInfo> getCompileResults() {
-		return this.compileResults;
+	public static String getWorkspceCompilerURI(String wid) {
+		return RestConstants.BASEPATH + RestConstants.COMPILER + "/" + wid;
 	}
 
-	public void setCompileResults(final Set<CompileInfo> compileResults) {
-		this.compileResults = compileResults;
+	public static String toWorkspaceURI(String wid, String relPath) {
+		return RestConstants.getWorkspaceURI(wid) + "/" + relPath.replaceAll("\\/", ":");
 	}
 
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("CompileContainer [compileResults=");
-		builder.append(getCompileResults());
-		builder.append("]");
-		return builder.toString();
-	}
 }

@@ -28,6 +28,8 @@ package org.pshdl.rest.models;
 
 import javax.xml.bind.annotation.*;
 
+import com.google.common.io.*;
+
 @XmlEnum(String.class)
 public enum FileType {
 	pshdl("lang-pshdl", "text/plain"), //
@@ -41,7 +43,7 @@ public enum FileType {
 	unknown("lang-text", "text/plain");
 
 	public static FileType of(String name) {
-		final String extension = name.substring(name.lastIndexOf('.') + 1, name.length());
+		final String extension = Files.getFileExtension(name);
 		if ("pshdl".equals(extension))
 			return pshdl;
 		if ("vhd".equals(extension))

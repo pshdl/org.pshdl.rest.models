@@ -35,21 +35,26 @@ import com.wordnik.swagger.annotations.*;
 @ApiModel("All information from the compilation")
 public class CompileInfo {
 
-	private ModuleInfo tree;
+	private List<FileRecord> files = Lists.newLinkedList();
 
-	private List<OutputInfo> addOutputs;
-
-	private List<ProblemInfo> problems;
-
-	private String file;
-
-	private String fileURI;
+	private List<ProblemInfo> problems = Lists.newLinkedList();
 
 	private long created;
 
+	private String creator;
+
 	public CompileInfo() {
-		addOutputs = Lists.newLinkedList();
-		problems = Lists.newLinkedList();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + (int) (created ^ (created >>> 32));
+		result = (prime * result) + ((creator == null) ? 0 : creator.hashCode());
+		result = (prime * result) + ((files == null) ? 0 : files.hashCode());
+		result = (prime * result) + ((problems == null) ? 0 : problems.hashCode());
+		return result;
 	}
 
 	@Override
@@ -61,96 +66,65 @@ public class CompileInfo {
 		if (getClass() != obj.getClass())
 			return false;
 		final CompileInfo other = (CompileInfo) obj;
-		if (fileURI == null) {
-			if (other.fileURI != null)
+		if (created != other.created)
+			return false;
+		if (creator == null) {
+			if (other.creator != null)
 				return false;
-		} else if (!fileURI.equals(other.fileURI))
+		} else if (!creator.equals(other.creator))
+			return false;
+		if (files == null) {
+			if (other.files != null)
+				return false;
+		} else if (!files.equals(other.files))
+			return false;
+		if (problems == null) {
+			if (other.problems != null)
+				return false;
+		} else if (!problems.equals(other.problems))
 			return false;
 		return true;
 	}
 
 	@JsonProperty
-	@ApiModelProperty(value = "If additional outputs have been generated, such as output from generators, it will be listed here")
-	public List<OutputInfo> getAddOutputs() {
-		return this.addOutputs;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The timestamp when this file was last compiled")
 	public long getCreated() {
 		return created;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The name of the file")
-	public String getFile() {
-		return file;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(value = "The URI of the primary output file")
-	public String getFileURI() {
-		return fileURI;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(value = "A list of problems that have been found with this file during compilation")
-	public List<ProblemInfo> getProblems() {
-		return this.problems;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(value = "An instantiation tree for displaying outline information (not implemented yet)")
-	public ModuleInfo getTree() {
-		return tree;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((fileURI == null) ? 0 : fileURI.hashCode());
-		return result;
-	}
-
-	public void setAddOutputs(final List<OutputInfo> addOutputs) {
-		this.addOutputs = addOutputs;
 	}
 
 	public void setCreated(long created) {
 		this.created = created;
 	}
 
-	public void setFile(String file) {
-		this.file = file;
+	@JsonProperty
+	public String getCreator() {
+		return creator;
 	}
 
-	public void setFileURI(String fileURI) {
-		this.fileURI = fileURI;
+	public void setCreator(String creator) {
+		this.creator = creator;
 	}
 
-	public void setProblems(final List<ProblemInfo> problems) {
-		this.problems = problems;
+	@JsonProperty
+	public List<FileRecord> getFiles() {
+		return files;
 	}
 
-	public void setTree(ModuleInfo tree) {
-		this.tree = tree;
+	@JsonProperty
+	public List<ProblemInfo> getProblems() {
+		return problems;
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("CompileInfo [tree=");
-		builder.append(getTree());
-		builder.append(", addOutputs=");
-		builder.append(getAddOutputs());
-		builder.append(", problems=");
-		builder.append(getProblems());
-		builder.append(", file=");
-		builder.append(getFile());
-		builder.append(", fileURI=");
-		builder.append(getFileURI());
-		builder.append("]");
-		return builder.toString();
+		return "CompileInfo [files=" + files + ", problems=" + problems + ", created=" + created + ", creator=" + creator + "]";
 	}
+
+	public void setProblems(List<ProblemInfo> problems) {
+		this.problems = problems;
+	}
+
+	public void setFiles(List<FileRecord> files) {
+		this.files = files;
+	}
+
 }

@@ -36,9 +36,7 @@ import com.google.common.io.*;
 import com.wordnik.swagger.annotations.*;
 
 @ApiModel("Information about addtional output files")
-public class OutputInfo {
-
-	private boolean isString;
+public class FileRecord {
 
 	private String fileURI;
 
@@ -46,7 +44,16 @@ public class OutputInfo {
 
 	private String file;
 
-	public OutputInfo() {
+	private long lastModified;
+
+	public FileRecord() {
+	}
+
+	public FileRecord(File f, File relDir, String wid) {
+		relPath = relDir.toURI().relativize(f.toURI()).getPath();
+		file = f.getAbsolutePath();
+		lastModified = f.lastModified();
+		fileURI = RestConstants.toWorkspaceURI(relPath, wid);
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class OutputInfo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final OutputInfo other = (OutputInfo) obj;
+		final FileRecord other = (FileRecord) obj;
 		if (fileURI == null) {
 			if (other.fileURI != null)
 				return false;
@@ -66,12 +73,25 @@ public class OutputInfo {
 		return true;
 	}
 
+	/**
+	 * Internal Method for reading the contents of this file
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public String readContents() throws IOException {
-		return Files.toString(new File(file), Charsets.UTF_8);
+		return Files.toString(getFile(), Charsets.UTF_8);
 	}
 
-	public String getFile() {
-		return file;
+	/**
+	 * A file handler for internal purposes
+	 * 
+	 * @return
+	 */
+	public File getFile() {
+		if (file != null)
+			return new File(file);
+		return new File(getRelPath());
 	}
 
 	@JsonProperty
@@ -94,22 +114,8 @@ public class OutputInfo {
 		return result;
 	}
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "When <b>true</b> this file is not a binary")
-	public boolean isString() {
-		return isString;
-	}
-
-	public void setContents(String content) throws IOException {
-		byte[] ba = content.getBytes(Charsets.UTF_8);
-		if (!isString()) {
-			ba = Base64.base64ToByteArray(content);
-		}
-		Files.write(ba, new File(file));
-	}
-
-	public void setFile(String file) {
-		this.file = file;
+	public void setFile(File file) {
+		this.file = file.getAbsolutePath();
 	}
 
 	public void setFileURI(String fileURI) {
@@ -120,16 +126,11 @@ public class OutputInfo {
 		this.relPath = relPath;
 	}
 
-	public void setString(boolean isString) {
-		this.isString = isString;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("OutputInfo [isString=");
-		builder.append(isString());
-		builder.append(", fileURI=");
+		builder.append("OutputInfo [");
+		builder.append("fileURI=");
 		builder.append(getFileURI());
 		builder.append(", relPath=");
 		builder.append(getRelPath());
@@ -137,6 +138,16 @@ public class OutputInfo {
 		builder.append(getFile());
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The timestamp of the last modification")
+	public long getLastModified() {
+		return lastModified;
+	}
+
+	public void setLastModified(long lastModified) {
+		this.lastModified = lastModified;
 	}
 
 }

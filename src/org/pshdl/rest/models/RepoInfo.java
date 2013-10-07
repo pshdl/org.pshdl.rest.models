@@ -47,6 +47,8 @@ public class RepoInfo {
 
 	private long lastValidation;
 
+	private String jsonVersion;
+
 	public RepoInfo() {
 		files = Sets.newTreeSet();
 	}
@@ -90,9 +92,9 @@ public class RepoInfo {
 		return this.eMail;
 	}
 
-	public FileInfo getFile(final String file) {
+	public FileInfo getFile(final String relPath) {
 		for (final FileInfo fi : this.getFiles()) {
-			if (fi.getName().equals(file))
+			if (fi.getRecord().getRelPath().equals(relPath))
 				return fi;
 		}
 		return null;
@@ -116,6 +118,11 @@ public class RepoInfo {
 		return lastValidation;
 	}
 
+	@JsonProperty
+	public String getJsonVersion() {
+		return jsonVersion;
+	}
+
 	@XmlTransient
 	public String getName() {
 		if (this.name == null)
@@ -127,7 +134,8 @@ public class RepoInfo {
 	public boolean isValidated() {
 		final Set<FileInfo> allFiles = getFiles();
 		for (final FileInfo fi : allFiles) {
-			if (fi.getLastModified() > lastValidation)
+			FileRecord record = fi.getRecord();
+			if (record.getLastModified() > lastValidation)
 				return false;
 		}
 		return true;
@@ -175,6 +183,10 @@ public class RepoInfo {
 		this.name = name;
 	}
 
+	public void setJsonVersion(String jsonVersion) {
+		this.jsonVersion = jsonVersion;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
@@ -186,6 +198,8 @@ public class RepoInfo {
 		builder.append(getId());
 		builder.append(", name=");
 		builder.append(getName());
+		builder.append(", version=");
+		builder.append(getJsonVersion());
 		builder.append("]");
 		return builder.toString();
 	}
