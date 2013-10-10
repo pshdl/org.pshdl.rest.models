@@ -3,11 +3,12 @@ package org.pshdl.rest.models;
 import javax.xml.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.*;
 import com.wordnik.swagger.annotations.*;
 
 @ApiModel("This message object is for communication inbetween workspace clients")
 @XmlRootElement
-public class Message<T> {
+public class Message<T> implements Comparable<Message<?>> {
 	public static final String VENDOR = "P";
 	public static final String WORKSPACE = VENDOR + ":WORKSPACE";
 	public static final String DELETED = WORKSPACE + ":DELETED";
@@ -90,6 +91,11 @@ public class Message<T> {
 		builder.append(getContents());
 		builder.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public int compareTo(Message<?> arg0) {
+		return ComparisonChain.start().compare(timeStamp, arg0.timeStamp).compare(subject, arg0.subject).result();
 	}
 
 }

@@ -134,8 +134,7 @@ public class RepoInfo {
 	public boolean isValidated() {
 		final Set<FileInfo> allFiles = getFiles();
 		for (final FileInfo fi : allFiles) {
-			FileRecord record = fi.getRecord();
-			if (record.getLastModified() > lastValidation)
+			if (fi.getRecord().getLastModified() > lastValidation)
 				return false;
 		}
 		return true;

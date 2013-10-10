@@ -28,6 +28,8 @@ package org.pshdl.rest.models;
 
 import java.io.*;
 
+import javax.xml.bind.annotation.*;
+
 import org.pshdl.rest.models.utils.*;
 
 import com.fasterxml.jackson.annotation.*;
@@ -88,6 +90,7 @@ public class FileRecord {
 	 * 
 	 * @return
 	 */
+	@XmlTransient
 	public File getFile() {
 		if (file != null)
 			return new File(file);
