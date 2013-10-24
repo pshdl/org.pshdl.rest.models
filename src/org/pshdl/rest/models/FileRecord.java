@@ -55,7 +55,7 @@ public class FileRecord {
 		relPath = relDir.toURI().relativize(f.toURI()).getPath();
 		file = f.getAbsolutePath();
 		lastModified = f.lastModified();
-		fileURI = RestConstants.toWorkspaceURI(relPath, wid);
+		fileURI = RestConstants.toWorkspaceURI(wid,relPath);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class FileRecord {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("OutputInfo [");
+		builder.append("FileRecord [");
 		builder.append("fileURI=");
 		builder.append(getFileURI());
 		builder.append(", relPath=");
