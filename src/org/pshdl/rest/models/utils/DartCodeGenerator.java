@@ -5,6 +5,11 @@ import java.util.*;
 
 import org.pshdl.model.validation.Problem.ProblemSeverity;
 import org.pshdl.rest.models.*;
+import org.pshdl.rest.models.settings.*;
+import org.pshdl.rest.models.settings.BoardSpecSettings.FPGASpec;
+import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec;
+import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec.Polarity;
+import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec.TimeSpec;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.*;
@@ -29,6 +34,12 @@ public class DartCodeGenerator {
 		System.out.println(generateEnum(CheckType.class));
 		System.out.println(generateEnum(ProblemSeverity.class));
 		System.out.println(generateEnum(CodeTarget.class));
+
+		System.out.println(generateClass(BoardSpecSettings.class));
+		System.out.println(generateClass(FPGASpec.class));
+		System.out.println(generateClass(PinSpec.class));
+		System.out.println(generateClass(TimeSpec.class));
+		System.out.println(generateEnum(Polarity.class));
 	}
 
 	public static String generateEnum(Class<?> clazz) {
