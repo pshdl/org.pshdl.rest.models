@@ -39,6 +39,7 @@ public enum FileType {
 	html("lang-html", "text/html"), //
 	cHeader("lang-cpp", "text/plain"), //
 	javascript("lang-javascript", "application/javascript"), //
+	json("lang-javascript", "application/javascript"), //
 	dart("lang-dart", "application/dart"), //
 	unknown("lang-text", "text/plain");
 
@@ -68,6 +69,8 @@ public enum FileType {
 			return dart;
 		if ("js".equals(extension))
 			return javascript;
+		if ("json".equals(extension))
+			return json;
 		return unknown;
 	}
 

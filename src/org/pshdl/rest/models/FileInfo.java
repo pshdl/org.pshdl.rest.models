@@ -27,8 +27,10 @@
 package org.pshdl.rest.models;
 
 import java.io.*;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.collect.*;
 import com.wordnik.swagger.annotations.*;
 
 @ApiModel("All information about a file")
@@ -41,6 +43,8 @@ public class FileInfo implements Comparable<FileInfo> {
 	private CheckType syntax;
 
 	private FileType type;
+
+	private List<ModuleInformation> moduleInfos = Lists.newArrayList();
 
 	public FileInfo() {
 	}
@@ -89,6 +93,15 @@ public class FileInfo implements Comparable<FileInfo> {
 
 	public void setRecord(FileRecord record) {
 		this.record = record;
+	}
+
+	@JsonProperty
+	public List<ModuleInformation> getModuleInfos() {
+		return moduleInfos;
+	}
+
+	public void setModuleInfos(List<ModuleInformation> moduleInfos) {
+		this.moduleInfos = moduleInfos;
 	}
 
 	@Override

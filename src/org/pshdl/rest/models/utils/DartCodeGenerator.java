@@ -3,13 +3,19 @@ package org.pshdl.rest.models.utils;
 import java.lang.reflect.*;
 import java.util.*;
 
+import org.pshdl.model.HDLPrimitive.HDLPrimitiveType;
+import org.pshdl.model.HDLVariableDeclaration.HDLDirection;
 import org.pshdl.model.validation.Problem.ProblemSeverity;
 import org.pshdl.rest.models.*;
+import org.pshdl.rest.models.InstanceInfos.FileInstances;
+import org.pshdl.rest.models.ModuleInformation.Port;
+import org.pshdl.rest.models.ModuleInformation.UnitType;
 import org.pshdl.rest.models.settings.*;
 import org.pshdl.rest.models.settings.BoardSpecSettings.FPGASpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec.Polarity;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec.TimeSpec;
+import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpecGroup;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.*;
@@ -37,9 +43,20 @@ public class DartCodeGenerator {
 
 		System.out.println(generateClass(BoardSpecSettings.class));
 		System.out.println(generateClass(FPGASpec.class));
+		System.out.println(generateClass(PinSpecGroup.class));
 		System.out.println(generateClass(PinSpec.class));
 		System.out.println(generateClass(TimeSpec.class));
 		System.out.println(generateEnum(Polarity.class));
+
+		System.out.println(generateClass(SynthesisSettings.class));
+
+		System.out.println(generateClass(InstanceInfos.class));
+		System.out.println(generateClass(FileInstances.class));
+		System.out.println(generateClass(ModuleInformation.class));
+		System.out.println(generateClass(Port.class));
+		System.out.println(generateEnum(UnitType.class));
+		System.out.println(generateEnum(HDLDirection.class));
+		System.out.println(generateEnum(HDLPrimitiveType.class));
 	}
 
 	public static String generateEnum(Class<?> clazz) {
@@ -123,14 +140,16 @@ public class DartCodeGenerator {
 		if (isPSHDLClass && !returnType.isEnum()) {
 			simpleType = "I" + simpleType;
 		}
-		if (returnType.isPrimitive()) {
+		if (returnType.isPrimitive() || returnType.equals(Integer.class)) {
 			simpleType = "num";
 		}
 		boolean isCollection = false;
 		if (Iterable.class.isAssignableFrom(returnType)) {
 			final ParameterizedType genericReturnType = (ParameterizedType) generic;
-			final String type = genericReturnType.getActualTypeArguments()[0].toString();
-			final String last = Iterators.getLast(Splitter.on('.').split(type).iterator());
+			final Type genericType = genericReturnType.getActualTypeArguments()[0];
+			final String type = genericType.toString();
+			String last = Iterators.getLast(Splitter.on('.').split(type).iterator());
+			last = Iterators.getLast(Splitter.on('$').split(last).iterator());
 			if (type.contains("pshdl")) {
 				simpleType = "List<I" + last + ">";
 				implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toMap());\n" + "  %1$s get %3$s {\n"//
@@ -140,6 +159,9 @@ public class DartCodeGenerator {
 						+ "  }\n\n",//
 						simpleType, last, name);
 			} else {
+				if (genericType.equals(Integer.class)) {
+					last = "int";
+				}
 				simpleType = "List<" + last + ">";
 				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal;\n" + "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n", name, simpleType);
 			}
