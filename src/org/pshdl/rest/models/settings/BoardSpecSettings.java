@@ -46,6 +46,12 @@ public class BoardSpecSettings extends Settings {
 	}
 
 	public static class PinSpec {
+		public static final String IOSTANDARD = "IOSTANDARD";
+		public final static String NO_VALUE = "#NO_VALUE";
+		public static final String PULL_UP = "UP";
+		public static final String PULL_DOWN = "DOWN";
+		public static final String PULL = "PULL";
+
 		public static class TimeSpec {
 			@JsonProperty
 			public final String time;
@@ -105,8 +111,6 @@ public class BoardSpecSettings extends Settings {
 		@JsonProperty
 		public final Polarity polarity;
 
-		public final static String NO_VALUE = "#NO_VALUE";
-
 		public PinSpec() {
 			this(null, null, null, Maps.<String, String> newHashMap(), null, null);
 		}
@@ -146,19 +150,23 @@ public class BoardSpecSettings extends Settings {
 		this.pinGroups = Lists.newArrayList(pins);
 	}
 
-	public String toUCF(String clockName, String rstName) {
+	public static interface IOutputWriter {
+		public void append(Formatter f, PinSpec ps);
+	}
+
+	public String toString(String clockName, String rstName, IOutputWriter writer) {
 		final Formatter f = new Formatter();
 		for (final PinSpecGroup pg : pinGroups) {
 			for (final PinSpec ps : pg.pins) {
 				if (ps.assignedSignal != null) {
 					if (ps.assignedSignal.equals("$clk") && (clockName != null)) {
 						ps.assignedSignal = clockName;
-						writeSpec(f, ps);
+						writer.append(f, ps);
 					} else if (ps.assignedSignal.equals("$rst") && (rstName != null)) {
 						ps.assignedSignal = rstName;
-						writeSpec(f, ps);
+						writer.append(f, ps);
 					} else {
-						writeSpec(f, ps);
+						writer.append(f, ps);
 					}
 				}
 			}
@@ -167,23 +175,63 @@ public class BoardSpecSettings extends Settings {
 		return string;
 	}
 
-	private void writeSpec(Formatter f, PinSpec ps) {
-		f.format("# %s\n", ps.portName);
-		f.format("NET \"%s\" LOC=%s ", ps.assignedSignal, ps.pinLocation);
-		for (final Entry<String, String> e : ps.attributes.entrySet()) {
-			if (PinSpec.NO_VALUE.equals(e.getValue())) {
-				f.format("| %s ", e.getKey());
-			} else {
-				f.format("| %s = %s ", e.getKey(), e.getValue());
+	public static class PDCWriter implements IOutputWriter {
+
+		@Override
+		public void append(Formatter f, PinSpec ps) {
+			f.format("# %s\n", ps.portName);
+			f.format("set_io {%s} -pinname %s ", ps.assignedSignal, ps.pinLocation);
+			for (final Entry<String, String> e : ps.attributes.entrySet()) {
+				if (PinSpec.PULL.equals(e.getKey())) {
+					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
+						f.format("-RES_PULL Down");
+					}
+					if (PinSpec.PULL_UP.equals(e.getValue())) {
+						f.format("-RES_PULL Up");
+					}
+				}
+				if (PinSpec.IOSTANDARD.equals(e.getKey())) {
+					f.format("-iostd %s ", e.getValue());
+				} else if (PinSpec.NO_VALUE.equals(e.getValue())) {
+					f.format("-%s ", e.getKey());
+				} else {
+					f.format("-%s %s ", e.getKey(), e.getValue());
+				}
+			}
+			f.format("\n");
+		}
+
+	}
+
+	public static class UCFWriter implements IOutputWriter {
+
+		@Override
+		public void append(Formatter f, PinSpec ps) {
+			f.format("# %s\n", ps.portName);
+			f.format("NET \"%s\" LOC=%s ", ps.assignedSignal, ps.pinLocation);
+			for (final Entry<String, String> e : ps.attributes.entrySet()) {
+				if (PinSpec.PULL.equals(e.getKey())) {
+					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
+						f.format("| PULLDOWN ");
+					}
+					if (PinSpec.PULL_UP.equals(e.getValue())) {
+						f.format("| PULLUP ");
+					}
+				} else if (PinSpec.NO_VALUE.equals(e.getValue())) {
+					f.format("| %s ", e.getKey());
+				} else {
+					f.format("| %s = %s ", e.getKey(), e.getValue());
+				}
+			}
+			if (ps.timeSpec != null) {
+				f.format("| TNM_NET = \"%s\"", ps.assignedSignal);
+			}
+			f.format(";\n");
+			if (ps.timeSpec != null) {
+				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", ps.assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
 			}
 		}
-		if (ps.timeSpec != null) {
-			f.format("| TNM_NET = \"%s\"", ps.assignedSignal);
-		}
-		f.format(";\n");
-		if (ps.timeSpec != null) {
-			f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", ps.assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
-		}
+
 	}
 
 }

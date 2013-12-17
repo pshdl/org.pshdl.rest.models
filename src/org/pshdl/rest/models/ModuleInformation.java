@@ -24,6 +24,10 @@ public class ModuleInformation {
 		@JsonProperty
 		public final List<String> annotations;
 
+		public Port() {
+			this(null, null, null, null, -1, null, null);
+		}
+
 		public Port(String name, HDLDirection dir, HDLPrimitiveType primitive, String enumRef, int width, List<Integer> dimensions, List<String> annotations) {
 			super();
 			this.name = name;
@@ -48,6 +52,10 @@ public class ModuleInformation {
 	public final List<String> instances;
 	@JsonProperty
 	public final UnitType type;
+
+	public ModuleInformation() {
+		this(null, null, null, null);
+	}
 
 	public ModuleInformation(String name, List<Port> ports, List<String> instances, UnitType type) {
 		super();
