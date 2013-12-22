@@ -11,6 +11,10 @@ public class InstanceInfos {
 		@JsonProperty
 		public final List<ModuleInformation> infos;
 
+		public FileInstances() {
+			this(null, null);
+		}
+
 		public FileInstances(String fileName, List<ModuleInformation> infos) {
 			super();
 			this.fileName = fileName;
@@ -21,6 +25,10 @@ public class InstanceInfos {
 
 	@JsonProperty
 	public final List<FileInstances> infos;
+
+	public InstanceInfos() {
+		this(null);
+	}
 
 	public InstanceInfos(List<FileInstances> infos) {
 		super();

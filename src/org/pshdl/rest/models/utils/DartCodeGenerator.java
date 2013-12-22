@@ -10,6 +10,7 @@ import org.pshdl.rest.models.*;
 import org.pshdl.rest.models.InstanceInfos.FileInstances;
 import org.pshdl.rest.models.ModuleInformation.Port;
 import org.pshdl.rest.models.ModuleInformation.UnitType;
+import org.pshdl.rest.models.SynthesisProgress.ProgressType;
 import org.pshdl.rest.models.settings.*;
 import org.pshdl.rest.models.settings.BoardSpecSettings.FPGASpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec;
@@ -57,6 +58,9 @@ public class DartCodeGenerator {
 		System.out.println(generateEnum(UnitType.class));
 		System.out.println(generateEnum(HDLDirection.class));
 		System.out.println(generateEnum(HDLPrimitiveType.class));
+
+		System.out.println(generateClass(SynthesisProgress.class));
+		System.out.println(generateEnum(ProgressType.class));
 	}
 
 	public static String generateEnum(Class<?> clazz) {
@@ -67,7 +71,7 @@ public class DartCodeGenerator {
 		final StringBuilder sb = new StringBuilder();
 		boolean first = true;
 		for (final Enum<?> e : enumConstants) {
-			f.format("  static final %1$s %2$s=new %1$s._create(%3$d,\"%2$s\");\n", simpleName, e.name(), e.ordinal());
+			f.format("  static const %1$s %2$s=const %1$s._create(%3$d,\"%2$s\");\n", simpleName, e.name(), e.ordinal());
 			if (!first) {
 				sb.append(", ");
 			}
@@ -75,12 +79,12 @@ public class DartCodeGenerator {
 			sb.append(e.name());
 		}
 		f.format("  static final List<%s> _values=[%s];\n", simpleName, sb);
-		f.format("  int _id;\n"//
-				+ "  String _name;\n"//
+		f.format("  final int _id;\n"//
+				+ "  final String _name;\n"//
 				+ "  int get ordinal=>_id;\n"//
 				+ "  String get name=>_name;\n"//
 				+ "  \n"//
-				+ "  %1$s._create(this._id, this._name);\n"//
+				+ "  const %1$s._create(this._id, this._name);\n"//
 				+ "  \n"//
 				+ "  String toString()=>_name;\n"//
 				+ "  \n"//
@@ -95,6 +99,11 @@ public class DartCodeGenerator {
 	}
 
 	public static String generateClass(Class<?> clazz) {
+		try {
+			clazz.newInstance();
+		} catch (final Exception e) {
+			System.err.println("DartCodeGenerator.generateClass() Class:" + clazz.getSimpleName() + " does not have a default constructor!");
+		}
 		final Method[] methods = clazz.getDeclaredMethods();
 		final Formatter abstractClass = new Formatter();
 		final String simpleName = clazz.getSimpleName();
@@ -140,7 +149,7 @@ public class DartCodeGenerator {
 		if (isPSHDLClass && !returnType.isEnum()) {
 			simpleType = "I" + simpleType;
 		}
-		if (returnType.isPrimitive() || returnType.equals(Integer.class)) {
+		if (returnType.isPrimitive() || returnType.equals(Integer.class) || returnType.equals(Double.class) || returnType.equals(Long.class) || returnType.equals(Float.class)) {
 			simpleType = "num";
 		}
 		boolean isCollection = false;

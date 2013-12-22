@@ -16,6 +16,10 @@ public class SynthesisSettings extends Settings {
 	@JsonProperty
 	public final List<PinSpec> overrides;
 
+	public SynthesisSettings() {
+		this(null, null, null);
+	}
+
 	public SynthesisSettings(BoardSpecSettings board, String topModule, List<PinSpec> overrides) {
 		super(SYNTHESIS, VERSION);
 		this.board = board;

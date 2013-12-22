@@ -37,6 +37,10 @@ public class BoardSpecSettings extends Settings {
 		@JsonProperty
 		public final List<PinSpec> pins;
 
+		public PinSpecGroup() {
+			this(null, null);
+		}
+
 		public PinSpecGroup(String name, String description, PinSpec... pins) {
 			super();
 			this.name = name;
