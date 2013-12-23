@@ -2,7 +2,7 @@ package org.pshdl.rest.models;
 
 import com.fasterxml.jackson.annotation.*;
 
-public class SynthesisProgress {
+public class ProgressFeedback {
 	public static enum ProgressType {
 		report, progress, output, done, information, warning, error
 	}
@@ -16,11 +16,11 @@ public class SynthesisProgress {
 	@JsonProperty
 	public final String message;
 
-	public SynthesisProgress() {
+	public ProgressFeedback() {
 		this(null, null, 0, null);
 	}
 
-	public SynthesisProgress(ProgressType type, Double progress, long timeStamp, String message) {
+	public ProgressFeedback(ProgressType type, Double progress, long timeStamp, String message) {
 		super();
 		this.type = type;
 		this.progress = progress;

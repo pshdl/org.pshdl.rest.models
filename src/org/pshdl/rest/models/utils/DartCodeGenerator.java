@@ -10,7 +10,7 @@ import org.pshdl.rest.models.*;
 import org.pshdl.rest.models.InstanceInfos.FileInstances;
 import org.pshdl.rest.models.ModuleInformation.Port;
 import org.pshdl.rest.models.ModuleInformation.UnitType;
-import org.pshdl.rest.models.SynthesisProgress.ProgressType;
+import org.pshdl.rest.models.ProgressFeedback.ProgressType;
 import org.pshdl.rest.models.settings.*;
 import org.pshdl.rest.models.settings.BoardSpecSettings.FPGASpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec;
@@ -59,7 +59,7 @@ public class DartCodeGenerator {
 		System.out.println(generateEnum(HDLDirection.class));
 		System.out.println(generateEnum(HDLPrimitiveType.class));
 
-		System.out.println(generateClass(SynthesisProgress.class));
+		System.out.println(generateClass(ProgressFeedback.class));
 		System.out.println(generateEnum(ProgressType.class));
 	}
 
