@@ -168,7 +168,7 @@ public class RepoInfo {
 		if (files == null) {
 			this.setFiles(new LinkedHashSet<FileInfo>());
 		} else {
-			this.setFiles(new LinkedHashSet<FileInfo>(Arrays.asList(files)));
+			this.setFiles(new LinkedHashSet<>(Arrays.asList(files)));
 		}
 		this.setName(name);
 		this.setEMail(eMail);
