@@ -28,13 +28,9 @@ package org.pshdl.rest.models;
 
 import java.io.*;
 
-import javax.xml.bind.annotation.*;
-
 import org.pshdl.rest.models.utils.*;
 
 import com.fasterxml.jackson.annotation.*;
-import com.google.common.base.*;
-import com.google.common.io.*;
 import com.wordnik.swagger.annotations.*;
 
 @ApiModel("Information about addtional output files")
@@ -44,8 +40,6 @@ public class FileRecord {
 
 	private String relPath;
 
-	private String file;
-
 	private long lastModified;
 
 	public FileRecord() {
@@ -53,7 +47,6 @@ public class FileRecord {
 
 	public FileRecord(File f, File relDir, String wid) {
 		relPath = relDir.toURI().relativize(f.toURI()).getPath();
-		file = f.getAbsolutePath();
 		lastModified = f.lastModified();
 		fileURI = RestConstants.toWorkspaceURI(wid, relPath);
 	}
@@ -73,28 +66,6 @@ public class FileRecord {
 		} else if (!fileURI.equals(other.fileURI))
 			return false;
 		return true;
-	}
-
-	/**
-	 * Internal Method for reading the contents of this file
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	public String readContents() throws IOException {
-		return Files.toString(getFile(), Charsets.UTF_8);
-	}
-
-	/**
-	 * A file handler for internal purposes
-	 * 
-	 * @return
-	 */
-	@XmlTransient
-	public File getFile() {
-		if (file != null)
-			return new File(file);
-		return new File(getRelPath());
 	}
 
 	@JsonProperty
@@ -117,10 +88,6 @@ public class FileRecord {
 		return result;
 	}
 
-	public void setFile(File file) {
-		this.file = file.getAbsolutePath();
-	}
-
 	public void setFileURI(String fileURI) {
 		this.fileURI = fileURI;
 	}
@@ -137,8 +104,6 @@ public class FileRecord {
 		builder.append(getFileURI());
 		builder.append(", relPath=");
 		builder.append(getRelPath());
-		builder.append(", file=");
-		builder.append(getFile());
 		builder.append("]");
 		return builder.toString();
 	}

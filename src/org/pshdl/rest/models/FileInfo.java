@@ -106,6 +106,6 @@ public class FileInfo implements Comparable<FileInfo> {
 
 	@Override
 	public int compareTo(FileInfo o) {
-		return record.getFile().compareTo(o.getRecord().getFile());
+		return record.getRelPath().compareTo(o.getRecord().getRelPath());
 	}
 }
