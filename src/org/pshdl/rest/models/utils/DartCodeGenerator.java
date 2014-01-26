@@ -107,7 +107,9 @@ public class DartCodeGenerator {
 		f.format("  static final List<%s> _values=[%s];\n", simpleName, sb);
 		f.format("  final int _id;\n"//
 				+ "  final String _name;\n"//
+				+ "  @reflectable\n"//
 				+ "  int get ordinal=>_id;\n"//
+				+ "  @reflectable\n"//
 				+ "  String get name=>_name;\n"//
 				+ "  \n"//
 				+ "  const %1$s._create(this._id, this._name);\n"//
@@ -135,9 +137,13 @@ public class DartCodeGenerator {
 		final String simpleName = clazz.getSimpleName();
 		abstractClass.format("abstract class I%s {\n", simpleName);
 		final Formatter implemementation = new Formatter();
-		implemementation.format("class %1$s implements I%1$s {\n" + "  Map _jsonMap;\n" + "  %1$s._create(this._jsonMap);\n" + "  \n"
-				+ "  factory %1$s.empty() => new %1$s._create(new HashMap());\n" + "  factory %1$s.fromJsonMap(Map map) => map==null ? null : new %1$s._create(map); \n"
-				+ "  factory %1$s.fromJsonString(string) => new %1$s._create(JSON.decode(string));\n" + "\n" + "  String toString() => JSON.encode(_jsonMap);\n"
+		implemementation.format("class %1$s implements I%1$s {\n" //
+				+ "  Map _jsonMap;\n"//
+				+ "  %1$s._create(this._jsonMap);\n\n"//
+				+ "  factory %1$s.empty() => new %1$s._create(new HashMap());\n" //
+				+ "  factory %1$s.fromJsonMap(Map map) => map==null ? null : new %1$s._create(map); \n" //
+				+ "  factory %1$s.fromJsonString(string) => new %1$s._create(JSON.decode(string));\n\n" //
+				+ "  String toString() => JSON.encode(_jsonMap);\n"//
 				+ "  Map toMap() => _jsonMap;\n", simpleName);
 		for (final Method method : methods) {
 			if (method.isAnnotationPresent(JsonProperty.class)) {
@@ -156,10 +162,6 @@ public class DartCodeGenerator {
 			if (f.isAnnotationPresent(JsonProperty.class)) {
 				format(abstractClass, implemementation, f.getName(), f.getType(), f.getGenericType());
 			}
-		}
-		if ("FileInfo".equals(simpleName)) {
-			implemementation.format("  String get name => record.relPath;\n");
-			abstractClass.format("  String get name;\n");
 		}
 		abstractClass.format("  Map toMap();\n}\n");
 		implemementation.format("\n}\n");
@@ -186,11 +188,13 @@ public class DartCodeGenerator {
 			String last = Iterators.getLast(Splitter.on('.').split(type).iterator());
 			last = Iterators.getLast(Splitter.on('$').split(last).iterator());
 			if (type.contains("pshdl")) {
-				simpleType = "List<I" + last + ">";
-				implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toMap());\n" + "  %1$s get %3$s {\n"//
+				simpleType = "Iterable<I" + last + ">";
+				implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toMap()).toList();\n"//
+						+ "  @reflectable\n"//
+						+ "  %1$s get %3$s {\n"//
 						+ "    List list=_jsonMap[\"%3$s\"];\n"//
 						+ "    if (list==null) return [];\n"//
-						+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJsonMap(o) ).toList();\n" //
+						+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJsonMap(o) );\n" //
 						+ "  }\n\n",//
 						simpleType, last, name);
 			} else {
@@ -203,21 +207,21 @@ public class DartCodeGenerator {
 			isCollection = true;
 		} else {
 			if (isPSHDLClass && !returnType.isEnum()) {
-				implemementation.format(//
-						"\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toMap();\n"//
-								+ "  %2$s get %1$s => new %2$s.fromJsonMap(_jsonMap[\"%1$s\"]);\n"//
-						, name, returnType.getSimpleName());
+				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toMap();\n"//
+						+ "  @reflectable\n" //
+						+ "  %2$s get %1$s => new %2$s.fromJsonMap(_jsonMap[\"%1$s\"]);\n"//
+				, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {
-					implemementation.format(//
-							"\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;\n"//
-									+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);\n"//
-							, name, simpleType);
+					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;\n"//
+							+ "  @reflectable\n" //
+							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);\n"//
+					, name, simpleType);
 				} else {
-					implemementation.format(//
-							"\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;\n"//
-									+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n"//
-							, name, simpleType);
+					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;\n"//
+							+ "  @reflectable\n" //
+							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n"//
+					, name, simpleType);
 				}
 			}
 		}

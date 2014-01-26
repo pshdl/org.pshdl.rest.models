@@ -31,16 +31,27 @@ import java.io.*;
 import org.pshdl.rest.models.utils.*;
 
 import com.fasterxml.jackson.annotation.*;
+import com.google.common.hash.*;
+import com.google.common.io.*;
 import com.wordnik.swagger.annotations.*;
 
 @ApiModel("Information about addtional output files")
 public class FileRecord {
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The URL which can be used to retrieve the file")
+	public String fileURI;
 
-	private String fileURI;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The relative path where this file is located")
+	public String relPath;
 
-	private String relPath;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The timestamp of the last modification")
+	public long lastModified;
 
-	private long lastModified;
+	@JsonProperty
+	@ApiModelProperty(required = false, value = "The hash of the file")
+	public String hash;
 
 	public FileRecord() {
 	}
@@ -49,6 +60,12 @@ public class FileRecord {
 		relPath = relDir.toURI().relativize(f.toURI()).getPath();
 		lastModified = f.lastModified();
 		fileURI = RestConstants.toWorkspaceURI(wid, relPath);
+		HashCode hash;
+		try {
+			hash = Files.asByteSource(f).hash(Hashing.sha1());
+			this.hash = hash.toString();
+		} catch (final IOException e) {
+		}
 	}
 
 	@Override
@@ -68,18 +85,6 @@ public class FileRecord {
 		return true;
 	}
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The URL which can be used to retrieve the file")
-	public String getFileURI() {
-		return fileURI;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The relative path where this file is located")
-	public String getRelPath() {
-		return relPath;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -88,34 +93,16 @@ public class FileRecord {
 		return result;
 	}
 
-	public void setFileURI(String fileURI) {
-		this.fileURI = fileURI;
-	}
-
-	public void setRelPath(String relPath) {
-		this.relPath = relPath;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("FileRecord [");
 		builder.append("fileURI=");
-		builder.append(getFileURI());
+		builder.append(fileURI);
 		builder.append(", relPath=");
-		builder.append(getRelPath());
+		builder.append(relPath);
 		builder.append("]");
 		return builder.toString();
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The timestamp of the last modification")
-	public long getLastModified() {
-		return lastModified;
-	}
-
-	public void setLastModified(long lastModified) {
-		this.lastModified = lastModified;
 	}
 
 }

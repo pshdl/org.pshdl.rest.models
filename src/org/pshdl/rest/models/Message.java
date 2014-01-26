@@ -37,9 +37,21 @@ import com.wordnik.swagger.annotations.*;
 public class Message<T> implements Comparable<Message<?>> {
 	public static final String VENDOR = "P";
 	public static final String WORKSPACE = VENDOR + ":WORKSPACE";
+	/**
+	 * The msgType is the {@link FileInfo} that was removed
+	 */
 	public static final String WORK_DELETED = WORKSPACE + ":DELETED";
+	/**
+	 * The msgType is an array of {@link FileInfo} that was added
+	 */
 	public static final String WORK_ADDED = WORKSPACE + ":ADDED";
+	/**
+	 * The msgType is an array of {@link FileInfo} that was updated
+	 */
 	public static final String WORK_UPDATED = WORKSPACE + ":UPDATED";
+	/**
+	 * The msgTyps is the {@link RepoInfo} of the newly created workspace
+	 */
 	public static final String WORK_CREATED_WORKSPACE = WORKSPACE + ":CREATED_WORKSPACE";
 	public static final String COMPILER = VENDOR + ":COMPILER";
 	public static final String COMP_VHDL = COMPILER + ":VHDL";
