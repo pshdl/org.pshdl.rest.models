@@ -137,7 +137,7 @@ public class DartCodeGenerator {
 		final String simpleName = clazz.getSimpleName();
 		abstractClass.format("abstract class I%s {\n", simpleName);
 		final Formatter implemementation = new Formatter();
-		implemementation.format("class %1$s implements I%1$s {\n" //
+		implemementation.format("class %1$s extends I%1$s {\n" //
 				+ "  Map _jsonMap;\n"//
 				+ "  %1$s._create(this._jsonMap);\n\n"//
 				+ "  factory %1$s.empty() => new %1$s._create(new HashMap());\n" //
@@ -162,6 +162,22 @@ public class DartCodeGenerator {
 			if (f.isAnnotationPresent(JsonProperty.class)) {
 				format(abstractClass, implemementation, f.getName(), f.getType(), f.getGenericType());
 			}
+			final int mod = f.getModifiers();
+			if (Modifier.isPublic(mod) && Modifier.isFinal(mod) && Modifier.isStatic(mod)) {
+				final String simpleType = getSimpleType(f.getType());
+				try {
+					final Object object = f.get(null);
+					if (object instanceof String) {
+						abstractClass.format("  static const %s %s='%s';\n", simpleType, f.getName(), object);
+					} else {
+						abstractClass.format("  static const %s %s=%s;\n", simpleType, f.getName(), object.toString());
+					}
+				} catch (final IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (final IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		abstractClass.format("  Map toMap();\n}\n");
 		implemementation.format("\n}\n");
@@ -172,13 +188,10 @@ public class DartCodeGenerator {
 	}
 
 	private static void format(final Formatter abstractClass, final Formatter implemementation, String name, final Class<?> returnType, Type generic) {
-		String simpleType = returnType.getSimpleName();
 		final boolean isPSHDLClass = returnType.getName().contains("pshdl");
+		String simpleType = getSimpleType(returnType);
 		if (isPSHDLClass && !returnType.isEnum()) {
 			simpleType = "I" + simpleType;
-		}
-		if (returnType.isPrimitive() || returnType.equals(Integer.class) || returnType.equals(Double.class) || returnType.equals(Long.class) || returnType.equals(Float.class)) {
-			simpleType = "num";
 		}
 		boolean isCollection = false;
 		if (Iterable.class.isAssignableFrom(returnType)) {
@@ -230,5 +243,11 @@ public class DartCodeGenerator {
 			abstractClass.format("=[]");
 		}
 		abstractClass.format(";\n");
+	}
+
+	public static String getSimpleType(final Class<?> returnType) {
+		if (returnType.isPrimitive() || returnType.equals(Integer.class) || returnType.equals(Double.class) || returnType.equals(Long.class) || returnType.equals(Float.class))
+			return "num";
+		return returnType.getSimpleName();
 	}
 }

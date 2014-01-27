@@ -31,6 +31,7 @@ public class RestConstants {
 	public static final String VERSION = "v0.1";
 	public static final String BASEPATH = "/api/" + VERSION;
 	public static final String WORKSPACE = "/workspace";
+	public static final String BOARDS = "/boards";
 	public static final String COMPILER = "/compiler";
 	public static final String STREAMING = "/streaming";
 

@@ -36,76 +36,44 @@ import com.wordnik.swagger.annotations.*;
 @ApiModel("All information about a file")
 public class FileInfo implements Comparable<FileInfo> {
 
-	private CompileInfo info;
+	@JsonProperty
+	@ApiModelProperty("If this file has been compiled or verified the information is stored here")
+	public CompileInfo info;
 
-	private FileRecord record;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "A sub specification of for example json files, which can be settings")
+	public String category;
 
-	private CheckType syntax;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "Information about this file")
+	public FileRecord record;
 
-	private FileType type;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The syntax status of this file")
+	public CheckType syntax;
 
-	private List<ModuleInformation> moduleInfos = Lists.newArrayList();
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The type of this file")
+	public FileType type;
+
+	@JsonProperty
+	public List<ModuleInformation> moduleInfos = Lists.newArrayList();
 
 	public FileInfo() {
 	}
 
-	@JsonProperty
-	@ApiModelProperty("If this file has been compiled or verified the information is stored here")
-	public CompileInfo getInfo() {
-		return this.info;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The syntax status of this file")
-	public CheckType getSyntax() {
-		return syntax;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The type of this file")
-	public FileType getType() {
-		return type;
-	}
-
 	public void setFromFile(File f, CheckType syntax, String wid, File relDir) {
 		this.record = new FileRecord(f, relDir, wid);
-		this.setSyntax(syntax);
-		this.setType(FileType.of(f.getName()));
-	}
-
-	public void setInfo(final CompileInfo info) {
-		this.info = info;
-	}
-
-	public void setSyntax(CheckType syntax) {
 		this.syntax = syntax;
-	}
-
-	public void setType(FileType type) {
-		this.type = type;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "Information about this file")
-	public FileRecord getRecord() {
-		return record;
-	}
-
-	public void setRecord(FileRecord record) {
-		this.record = record;
-	}
-
-	@JsonProperty
-	public List<ModuleInformation> getModuleInfos() {
-		return moduleInfos;
-	}
-
-	public void setModuleInfos(List<ModuleInformation> moduleInfos) {
-		this.moduleInfos = moduleInfos;
+		this.type = FileType.of(f.getName());
 	}
 
 	@Override
 	public int compareTo(FileInfo o) {
-		return record.relPath.compareTo(o.getRecord().relPath);
+		return record.relPath.compareTo(o.record.relPath);
+	}
+
+	public void setInfo(CompileInfo ci) {
+		info = ci;
 	}
 }

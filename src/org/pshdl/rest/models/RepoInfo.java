@@ -94,7 +94,7 @@ public class RepoInfo {
 
 	public FileInfo getFile(final String relPath) {
 		for (final FileInfo fi : this.getFiles()) {
-			if (fi.getRecord().relPath.equals(relPath))
+			if (fi.record.relPath.equals(relPath))
 				return fi;
 		}
 		return null;
@@ -134,7 +134,7 @@ public class RepoInfo {
 	public boolean isValidated() {
 		final Set<FileInfo> allFiles = getFiles();
 		for (final FileInfo fi : allFiles) {
-			if (fi.getRecord().lastModified > lastValidation)
+			if (fi.record.lastModified > lastValidation)
 				return false;
 		}
 		return true;

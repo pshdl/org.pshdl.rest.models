@@ -36,7 +36,7 @@ public class SynthesisSettings extends Settings {
 	public static final String VERSION = "0.1";
 	public static final String SYNTHESIS = "Synthesis";
 	@JsonProperty
-	public final BoardSpecSettings board;
+	public final String board;
 	@JsonProperty
 	public final String topModule;
 	@JsonProperty
@@ -46,7 +46,7 @@ public class SynthesisSettings extends Settings {
 		this(null, null, null);
 	}
 
-	public SynthesisSettings(BoardSpecSettings board, String topModule, List<PinSpec> overrides) {
+	public SynthesisSettings(String board, String topModule, List<PinSpec> overrides) {
 		super(SYNTHESIS, VERSION);
 		this.board = board;
 		this.topModule = topModule;
