@@ -44,6 +44,8 @@ public class ModuleInformation {
 		@JsonProperty
 		public final String enumRef;
 		@JsonProperty
+		public final String defaultValue;
+		@JsonProperty
 		public final int width;
 		@JsonProperty
 		public final List<Integer> dimensions;
@@ -51,10 +53,10 @@ public class ModuleInformation {
 		public final List<String> annotations;
 
 		public Port() {
-			this(null, null, null, null, -1, null, null);
+			this(null, null, null, null, -1, null, null, null);
 		}
 
-		public Port(String name, HDLDirection dir, HDLPrimitiveType primitive, String enumRef, int width, List<Integer> dimensions, List<String> annotations) {
+		public Port(String name, HDLDirection dir, HDLPrimitiveType primitive, String enumRef, int width, List<Integer> dimensions, List<String> annotations, String defaultValue) {
 			super();
 			this.name = name;
 			this.dir = dir;
@@ -63,6 +65,7 @@ public class ModuleInformation {
 			this.width = width;
 			this.dimensions = dimensions;
 			this.annotations = annotations;
+			this.defaultValue = defaultValue;
 		}
 	}
 

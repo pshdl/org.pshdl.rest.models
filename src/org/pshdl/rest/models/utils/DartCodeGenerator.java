@@ -69,6 +69,7 @@ public class DartCodeGenerator {
 		System.out.println(generateEnum(CodeTarget.class));
 
 		System.out.println(generateClass(BoardSpecSettings.class));
+		System.out.println(generateClass(InteractiveMap.class));
 		System.out.println(generateClass(FPGASpec.class));
 		System.out.println(generateClass(PinSpecGroup.class));
 		System.out.println(generateClass(PinSpec.class));
@@ -140,11 +141,11 @@ public class DartCodeGenerator {
 		implemementation.format("class %1$s extends I%1$s {\n" //
 				+ "  Map _jsonMap;\n"//
 				+ "  %1$s._create(this._jsonMap);\n\n"//
-				+ "  factory %1$s.empty() => new %1$s._create(new HashMap());\n" //
-				+ "  factory %1$s.fromJsonMap(Map map) => map==null ? null : new %1$s._create(map); \n" //
+				+ "  factory %1$s.empty() => new %1$s._create({});\n" //
+				+ "  factory %1$s.fromJson(Map map) => map==null ? null : new %1$s._create(map); \n" //
 				+ "  factory %1$s.fromJsonString(string) => new %1$s._create(JSON.decode(string));\n\n" //
 				+ "  String toString() => JSON.encode(_jsonMap);\n"//
-				+ "  Map toMap() => _jsonMap;\n", simpleName);
+				+ "  Map toJson() => _jsonMap;\n", simpleName);
 		for (final Method method : methods) {
 			if (method.isAnnotationPresent(JsonProperty.class)) {
 				String name = method.getName();
@@ -179,7 +180,7 @@ public class DartCodeGenerator {
 				}
 			}
 		}
-		abstractClass.format("  Map toMap();\n}\n");
+		abstractClass.format("  Map toJson();\n}\n");
 		implemementation.format("\n}\n");
 		final String f = abstractClass.toString() + implemementation.toString();
 		abstractClass.close();
@@ -202,12 +203,12 @@ public class DartCodeGenerator {
 			last = Iterators.getLast(Splitter.on('$').split(last).iterator());
 			if (type.contains("pshdl")) {
 				simpleType = "Iterable<I" + last + ">";
-				implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toMap()).toList();\n"//
+				implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();\n"//
 						+ "  @reflectable\n"//
 						+ "  %1$s get %3$s {\n"//
 						+ "    List list=_jsonMap[\"%3$s\"];\n"//
 						+ "    if (list==null) return [];\n"//
-						+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJsonMap(o) );\n" //
+						+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );\n" //
 						+ "  }\n\n",//
 						simpleType, last, name);
 			} else {
@@ -220,9 +221,9 @@ public class DartCodeGenerator {
 			isCollection = true;
 		} else {
 			if (isPSHDLClass && !returnType.isEnum()) {
-				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toMap();\n"//
+				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();\n"//
 						+ "  @reflectable\n" //
-						+ "  %2$s get %1$s => new %2$s.fromJsonMap(_jsonMap[\"%1$s\"]);\n"//
+						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);\n"//
 				, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {

@@ -34,13 +34,25 @@ import com.wordnik.swagger.annotations.*;
 @ApiModel("Detailed position information for a problem")
 public class LocationInfo {
 
-	private int length;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The length of the problem")
+	public int length;
 
-	private int line;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The line within the file in which the problem occured")
+	public int line;
 
-	private int offsetInLine;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The offset within the line at which the problem occured")
+	public int offsetInLine;
 
-	private int totalOffset;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The total character offset within the file at which the problem occured")
+	public int totalOffset;
+
+	@JsonProperty
+	@ApiModelProperty(required = false, value = "The logical path to the element")
+	public String path;
 
 	public LocationInfo() {
 	}
@@ -65,30 +77,6 @@ public class LocationInfo {
 		return true;
 	}
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The length of the problem")
-	public int getLength() {
-		return length;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The line within the file in which the problem occured")
-	public int getLine() {
-		return line;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The offset within the line at which the problem occured")
-	public int getOffsetInLine() {
-		return offsetInLine;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The total character offset within the file at which the problem occured")
-	public int getTotalOffset() {
-		return totalOffset;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -101,40 +89,10 @@ public class LocationInfo {
 	}
 
 	public void setFromProblem(Problem p) {
-		this.setLine(p.line);
-		this.setLength(p.length);
-		this.setOffsetInLine(p.offsetInLine);
-		this.setTotalOffset(p.totalOffset);
+		this.line = (p.line);
+		this.length = (p.length);
+		this.offsetInLine = (p.offsetInLine);
+		this.totalOffset = (p.totalOffset);
 	}
 
-	public void setLength(int length) {
-		this.length = length;
-	}
-
-	public void setLine(int line) {
-		this.line = line;
-	}
-
-	public void setOffsetInLine(int offsetInLine) {
-		this.offsetInLine = offsetInLine;
-	}
-
-	public void setTotalOffset(int totalOffset) {
-		this.totalOffset = totalOffset;
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("LocationInfo [length=");
-		stringBuilder.append(getLength());
-		stringBuilder.append(", line=");
-		stringBuilder.append(getLine());
-		stringBuilder.append(", offsetInLine=");
-		stringBuilder.append(getOffsetInLine());
-		stringBuilder.append(", totalOffset=");
-		stringBuilder.append(getTotalOffset());
-		stringBuilder.append("]");
-		return stringBuilder.toString();
-	}
 }

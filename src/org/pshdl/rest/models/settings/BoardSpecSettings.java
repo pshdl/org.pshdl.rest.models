@@ -28,8 +28,9 @@ package org.pshdl.rest.models.settings;
 
 import java.math.*;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.*;
+
+import org.pshdl.model.HDLVariableDeclaration.HDLDirection;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.collect.*;
@@ -140,12 +141,14 @@ public class BoardSpecSettings extends Settings {
 		public String assignedSignal;
 		@JsonProperty
 		public final Polarity polarity;
+		@JsonProperty
+		public final HDLDirection direction;
 
 		public PinSpec() {
-			this(null, null, null, Maps.<String, String> newHashMap(), null, null);
+			this(null, null, null, Maps.<String, String> newHashMap(), null, null, null);
 		}
 
-		public PinSpec(String portName, String pinLocation, String description, Map<String, String> attributes, TimeSpec timeSpec, Polarity polarity) {
+		public PinSpec(String portName, String pinLocation, String description, Map<String, String> attributes, TimeSpec timeSpec, Polarity polarity, HDLDirection direction) {
 			super();
 			this.description = description;
 			this.portName = portName;
@@ -153,6 +156,32 @@ public class BoardSpecSettings extends Settings {
 			this.timeSpec = timeSpec;
 			this.pinLocation = pinLocation;
 			this.polarity = polarity;
+			this.direction = direction;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = (prime * result) + ((pinLocation == null) ? 0 : pinLocation.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			final PinSpec other = (PinSpec) obj;
+			if (pinLocation == null) {
+				if (other.pinLocation != null)
+					return false;
+			} else if (!pinLocation.equals(other.pinLocation))
+				return false;
+			return true;
 		}
 	}
 
@@ -164,104 +193,22 @@ public class BoardSpecSettings extends Settings {
 	public final FPGASpec fpga;
 	@JsonProperty
 	public final List<PinSpecGroup> pinGroups;
+	@JsonProperty
+	public final InteractiveMap map;
 
 	public final static String BOARD_CATEGORY = "Board";
 	public final static String VERSION = "0.1";
 
 	public BoardSpecSettings() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
-	public BoardSpecSettings(String boardName, String description, FPGASpec fpga, PinSpecGroup... pins) {
+	public BoardSpecSettings(String boardName, String description, FPGASpec fpga, InteractiveMap map, PinSpecGroup... pins) {
 		super(BOARD_CATEGORY, VERSION);
 		this.boardName = boardName;
 		this.description = description;
 		this.fpga = fpga;
 		this.pinGroups = Lists.newArrayList(pins);
+		this.map = map;
 	}
-
-	public static interface IOutputWriter {
-		public void append(Formatter f, PinSpec ps);
-	}
-
-	public String toString(String clockName, String rstName, IOutputWriter writer) {
-		final Formatter f = new Formatter();
-		for (final PinSpecGroup pg : pinGroups) {
-			for (final PinSpec ps : pg.pins) {
-				if (ps.assignedSignal != null) {
-					if (ps.assignedSignal.equals("$clk") && (clockName != null)) {
-						ps.assignedSignal = clockName;
-						writer.append(f, ps);
-					} else if (ps.assignedSignal.equals("$rst") && (rstName != null)) {
-						ps.assignedSignal = rstName;
-						writer.append(f, ps);
-					} else {
-						writer.append(f, ps);
-					}
-				}
-			}
-		}
-		final String string = f.toString();
-		return string;
-	}
-
-	public static class PDCWriter implements IOutputWriter {
-
-		@Override
-		public void append(Formatter f, PinSpec ps) {
-			f.format("# %s\n", ps.portName);
-			f.format("set_io {%s} -pinname %s ", ps.assignedSignal, ps.pinLocation);
-			for (final Entry<String, String> e : ps.attributes.entrySet()) {
-				if (PinSpec.PULL.equals(e.getKey())) {
-					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-						f.format("-RES_PULL Down");
-					}
-					if (PinSpec.PULL_UP.equals(e.getValue())) {
-						f.format("-RES_PULL Up");
-					}
-				}
-				if (PinSpec.IOSTANDARD.equals(e.getKey())) {
-					f.format("-iostd %s ", e.getValue());
-				} else if (PinSpec.NO_VALUE.equals(e.getValue())) {
-					f.format("-%s ", e.getKey());
-				} else {
-					f.format("-%s %s ", e.getKey(), e.getValue());
-				}
-			}
-			f.format("\n");
-		}
-
-	}
-
-	public static class UCFWriter implements IOutputWriter {
-
-		@Override
-		public void append(Formatter f, PinSpec ps) {
-			f.format("# %s\n", ps.portName);
-			f.format("NET \"%s\" LOC=%s ", ps.assignedSignal, ps.pinLocation);
-			for (final Entry<String, String> e : ps.attributes.entrySet()) {
-				if (PinSpec.PULL.equals(e.getKey())) {
-					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-						f.format("| PULLDOWN ");
-					}
-					if (PinSpec.PULL_UP.equals(e.getValue())) {
-						f.format("| PULLUP ");
-					}
-				} else if (PinSpec.NO_VALUE.equals(e.getValue())) {
-					f.format("| %s ", e.getKey());
-				} else {
-					f.format("| %s = %s ", e.getKey(), e.getValue());
-				}
-			}
-			if (ps.timeSpec != null) {
-				f.format("| TNM_NET = \"%s\"", ps.assignedSignal);
-			}
-			f.format(";\n");
-			if (ps.timeSpec != null) {
-				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", ps.assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
-			}
-		}
-
-	}
-
 }

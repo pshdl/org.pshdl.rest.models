@@ -36,19 +36,29 @@ import com.wordnik.swagger.annotations.*;
 @ApiModel("When a problem was found with the input file(s) this object contains all information about the problem")
 public class ProblemInfo {
 
-	private AdviseInfo advise;
+	@JsonProperty
+	@ApiModelProperty(value = "An advise on how to fix this problem. Also contains a more human readable description of the problem")
+	public AdviseInfo advise;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The location of the problem")
+	public LocationInfo location;
 
-	private LocationInfo location;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The unique id of this problem. This is equivalent to the error class name and the name of the error")
+	public String errorCode;
 
-	private String errorCode;
+	@JsonProperty
+	@ApiModelProperty(value = "For some errors a clarifying info is available")
+	public String info;
 
-	private String info;
+	public boolean isSyntax;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "A unique id for that problem")
+	public int pid;
 
-	private boolean isSyntax;
-
-	private int pid;
-
-	private ProblemSeverity severity;
+	@JsonProperty
+	@ApiModelProperty(required = true, value = "The severity of the problem")
+	public ProblemSeverity severity;
 
 	public ProblemInfo() {
 	}
@@ -67,42 +77,6 @@ public class ProblemInfo {
 		return true;
 	}
 
-	@JsonProperty
-	@ApiModelProperty(value = "An advise on how to fix this problem. Also contains a more human readable description of the problem")
-	public AdviseInfo getAdvise() {
-		return this.advise;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The unique id of this problem. This is equivalent to the error class name and the name of the error")
-	public String getErrorCode() {
-		return errorCode;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(value = "For some errors a clarifying info is available")
-	public String getInfo() {
-		return info;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The location of the problem")
-	public LocationInfo getLocation() {
-		return this.location;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "A unique id for that problem")
-	public int getPid() {
-		return pid;
-	}
-
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The severity of the problem")
-	public ProblemSeverity getSeverity() {
-		return severity;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -111,69 +85,21 @@ public class ProblemInfo {
 		return result;
 	}
 
-	public boolean isSyntax() {
-		return isSyntax;
-	}
-
-	public void setAdvise(final AdviseInfo advise) {
-		this.advise = advise;
-	}
-
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
-
 	public void setFromProblem(final Problem problem) {
 		final HDLAdvise advise = HDLValidator.advise(problem);
 		if (advise != null) {
 			final AdviseInfo ad = new AdviseInfo();
 			ad.setFromAdvise(advise);
-			this.setAdvise(ad);
+			this.advise = (ad);
 		}
-		this.setErrorCode(((problem.getClass().getName() + ".") + problem.code.name()));
-		this.setSeverity(problem.code.getSeverity());
-		this.setInfo(problem.info);
-		this.setPid(problem.pid);
+		this.errorCode = (((problem.getClass().getName() + ".") + problem.code.name()));
+		this.severity = (problem.code.getSeverity());
+		this.info = (problem.info);
+		this.pid = (problem.pid);
 		final LocationInfo loc = new LocationInfo();
 		loc.setFromProblem(problem);
-		this.setLocation(loc);
-		this.setSyntax(problem.isSyntax);
+		this.location = (loc);
+		this.isSyntax = (problem.isSyntax);
 	}
 
-	public void setInfo(String info) {
-		this.info = info;
-	}
-
-	public void setLocation(final LocationInfo location) {
-		this.location = location;
-	}
-
-	public void setPid(int pid) {
-		this.pid = pid;
-	}
-
-	public void setSeverity(ProblemSeverity severity) {
-		this.severity = severity;
-	}
-
-	public void setSyntax(boolean isSyntax) {
-		this.isSyntax = isSyntax;
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("ProblemInfo [_location=");
-		stringBuilder.append(getLocation());
-		stringBuilder.append(", errorCode=");
-		stringBuilder.append(getErrorCode());
-		stringBuilder.append(", info=");
-		stringBuilder.append(getInfo());
-		stringBuilder.append(", pid=");
-		stringBuilder.append(getPid());
-		stringBuilder.append(", severity=");
-		stringBuilder.append(getSeverity());
-		stringBuilder.append("]");
-		return stringBuilder.toString();
-	}
 }
