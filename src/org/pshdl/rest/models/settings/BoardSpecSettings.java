@@ -160,10 +160,17 @@ public class BoardSpecSettings extends Settings {
 		}
 
 		@Override
+		public String toString() {
+			return "PinSpec [ portName=" + portName + ", pinLocation=" + pinLocation + ", assignedSignal=" + assignedSignal + ", attributes=" + attributes + ", timeSpec="
+					+ timeSpec + ", polarity=" + polarity + ", direction=" + direction + "]";
+		}
+
+		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
 			result = (prime * result) + ((pinLocation == null) ? 0 : pinLocation.hashCode());
+			result = (prime * result) + ((portName == null) ? 0 : portName.hashCode());
 			return result;
 		}
 
@@ -180,6 +187,11 @@ public class BoardSpecSettings extends Settings {
 				if (other.pinLocation != null)
 					return false;
 			} else if (!pinLocation.equals(other.pinLocation))
+				return false;
+			if (portName == null) {
+				if (other.portName != null)
+					return false;
+			} else if (!portName.equals(other.portName))
 				return false;
 			return true;
 		}

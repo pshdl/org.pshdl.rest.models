@@ -69,6 +69,7 @@ public class SynthesisSettings extends Settings {
 		for (final PinSpecGroup pg : board.pinGroups) {
 			pinSpec.addAll(pg.pins);
 		}
+		pinSpec.removeAll(overrides);
 		pinSpec.addAll(overrides);
 		for (final PinSpec ps : pinSpec) {
 			if (ps.assignedSignal != null) {
@@ -92,22 +93,27 @@ public class SynthesisSettings extends Settings {
 		@Override
 		public void append(Formatter f, PinSpec ps) {
 			f.format("# %s\n", ps.portName);
-			f.format("set_io {%s} -pinname %s ", ps.assignedSignal, ps.pinLocation);
+			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
+			f.format("set_io {%s} -pinname %s ", assignedSignal, ps.pinLocation);
 			for (final Entry<String, String> e : ps.attributes.entrySet()) {
-				if (PinSpec.PULL.equals(e.getKey())) {
+				switch (e.getKey()) {
+				case PinSpec.PULL:
 					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-						f.format("-RES_PULL Down");
+						f.format("-RES_PULL Down ");
 					}
 					if (PinSpec.PULL_UP.equals(e.getValue())) {
-						f.format("-RES_PULL Up");
+						f.format("-RES_PULL Up ");
 					}
-				}
-				if (PinSpec.IOSTANDARD.equals(e.getKey())) {
+					break;
+				case PinSpec.IOSTANDARD:
 					f.format("-iostd %s ", e.getValue());
-				} else if (PinSpec.NO_VALUE.equals(e.getValue())) {
-					f.format("-%s ", e.getKey());
-				} else {
-					f.format("-%s %s ", e.getKey(), e.getValue());
+					break;
+				default:
+					if (PinSpec.NO_VALUE.equals(e.getValue())) {
+						f.format("-%s ", e.getKey());
+					} else {
+						f.format("-%s %s ", e.getKey(), e.getValue());
+					}
 				}
 			}
 			f.format("\n");
@@ -120,7 +126,8 @@ public class SynthesisSettings extends Settings {
 		@Override
 		public void append(Formatter f, PinSpec ps) {
 			f.format("# %s\n", ps.portName);
-			f.format("NET \"%s\" LOC=%s ", ps.assignedSignal, ps.pinLocation);
+			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
+			f.format("NET \"%s\" LOC=%s ", assignedSignal, ps.pinLocation);
 			for (final Entry<String, String> e : ps.attributes.entrySet()) {
 				if (PinSpec.PULL.equals(e.getKey())) {
 					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
@@ -136,11 +143,11 @@ public class SynthesisSettings extends Settings {
 				}
 			}
 			if (ps.timeSpec != null) {
-				f.format("| TNM_NET = \"%s\"", ps.assignedSignal);
+				f.format("| TNM_NET = \"%s\"", assignedSignal);
 			}
 			f.format(";\n");
 			if (ps.timeSpec != null) {
-				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", ps.assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
+				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
 			}
 		}
 
