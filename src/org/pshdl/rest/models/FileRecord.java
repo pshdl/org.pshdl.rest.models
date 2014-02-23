@@ -56,16 +56,16 @@ public class FileRecord {
 	public FileRecord() {
 	}
 
-	public FileRecord(File f, File relDir, String wid) {
-		relPath = relDir.toURI().relativize(f.toURI()).getPath();
-		lastModified = f.lastModified();
-		fileURI = RestConstants.toWorkspaceURI(wid, relPath);
-		HashCode hash;
-		try {
-			hash = Files.asByteSource(f).hash(Hashing.sha1());
-			this.hash = hash.toString();
-		} catch (final IOException e) {
-		}
+	public FileRecord(File f, File relDir, String wid) throws IOException {
+		this.lastModified = f.lastModified();
+		this.relPath = relDir.toURI().relativize(f.toURI()).getPath();
+		updateURI(wid, relPath);
+		this.hash = Files.asByteSource(f).hash(Hashing.sha1()).toString();
+	}
+
+	public void updateURI(String wid, String relPath) {
+		this.relPath = relPath;
+		this.fileURI = RestConstants.toWorkspaceURI(wid, relPath);
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import com.google.common.io.*;
 public enum FileType {
 	pshdl("lang-pshdl", "text/plain"), //
 	vhdl("lang-vhdl", "text/plain"), //
+	verilog("lang-verilog", "text/plain"), //
 	markdown("lang-text", "text/plain"), //
 	cpp("lang-cpp", "text/plain"), //
 	html("lang-html", "text/html"), //
@@ -45,33 +46,40 @@ public enum FileType {
 
 	public static FileType of(String name) {
 		final String extension = Files.getFileExtension(name);
-		if ("pshdl".equals(extension))
+		switch (extension) {
+		case "pshdl":
 			return pshdl;
-		if ("vhd".equals(extension))
+		case "vhdl":
 			return vhdl;
-		if ("vhdl".equals(extension))
+		case "vhd":
 			return vhdl;
-		if ("md".equals(extension))
+		case "v":
+			return verilog;
+		case "sv":
+			return verilog;
+		case "md":
 			return markdown;
-		if ("markdown".equals(extension))
+		case "markdown":
 			return markdown;
-		if ("c".equals(extension))
+		case "c":
 			return cpp;
-		if ("cpp".equals(extension))
+		case "cpp":
 			return cpp;
-		if ("h".equals(extension))
+		case "h":
 			return cHeader;
-		if ("htm".equals(extension))
+		case "htm":
 			return html;
-		if ("html".equals(extension))
+		case "html":
 			return html;
-		if ("dart".equals(extension))
+		case "dart":
 			return dart;
-		if ("js".equals(extension))
-			return javascript;
-		if ("json".equals(extension))
+		case "json":
 			return json;
-		return unknown;
+		case "js":
+			return javascript;
+		default:
+			return unknown;
+		}
 	}
 
 	public final String prettify;

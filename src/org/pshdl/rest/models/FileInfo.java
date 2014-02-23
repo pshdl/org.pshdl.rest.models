@@ -62,7 +62,7 @@ public class FileInfo implements Comparable<FileInfo> {
 	public FileInfo() {
 	}
 
-	public void setFromFile(File f, CheckType syntax, String wid, File relDir) {
+	public void setFromFile(File f, CheckType syntax, String wid, File relDir) throws IOException {
 		this.record = new FileRecord(f, relDir, wid);
 		this.syntax = syntax;
 		this.type = FileType.of(f.getName());
