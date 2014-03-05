@@ -73,13 +73,20 @@ public class SynthesisSettings extends Settings {
 		pinSpec.addAll(overrides);
 		for (final PinSpec ps : pinSpec) {
 			if (ps.assignedSignal != null) {
-				if (ps.assignedSignal.equals("$clk") && (clockName != null)) {
-					ps.assignedSignal = clockName;
-					writer.append(f, ps);
-				} else if (ps.assignedSignal.equals("$rst") && (rstName != null)) {
-					ps.assignedSignal = rstName;
-					writer.append(f, ps);
-				} else {
+				switch (ps.assignedSignal) {
+				case "$clk":
+					if (clockName != null) {
+						ps.assignedSignal = clockName;
+						writer.append(f, ps);
+					}
+					break;
+				case "$rst":
+					if (rstName != null) {
+						ps.assignedSignal = rstName;
+						writer.append(f, ps);
+					}
+					break;
+				default:
 					writer.append(f, ps);
 				}
 			}
@@ -95,24 +102,28 @@ public class SynthesisSettings extends Settings {
 			f.format("# %s\n", ps.portName);
 			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
 			f.format("set_io {%s} -pinname %s ", assignedSignal, ps.pinLocation);
-			for (final Entry<String, String> e : ps.attributes.entrySet()) {
-				switch (e.getKey()) {
-				case PinSpec.PULL:
-					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-						f.format("-RES_PULL Down ");
-					}
-					if (PinSpec.PULL_UP.equals(e.getValue())) {
-						f.format("-RES_PULL Up ");
-					}
-					break;
-				case PinSpec.IOSTANDARD:
-					f.format("-iostd %s ", e.getValue());
-					break;
-				default:
-					if (PinSpec.NO_VALUE.equals(e.getValue())) {
-						f.format("-%s ", e.getKey());
-					} else {
-						f.format("-%s %s ", e.getKey(), e.getValue());
+			if (ps.attributes != null) {
+				for (final Entry<String, String> e : ps.attributes.entrySet()) {
+					switch (e.getKey()) {
+					case PinSpec.INVERT:
+						break;
+					case PinSpec.PULL:
+						if (PinSpec.PULL_DOWN.equals(e.getValue())) {
+							f.format("-RES_PULL Down ");
+						}
+						if (PinSpec.PULL_UP.equals(e.getValue())) {
+							f.format("-RES_PULL Up ");
+						}
+						break;
+					case PinSpec.IOSTANDARD:
+						f.format("-iostd %s ", e.getValue());
+						break;
+					default:
+						if (PinSpec.NO_VALUE.equals(e.getValue())) {
+							f.format("-%s ", e.getKey());
+						} else {
+							f.format("-%s %s ", e.getKey(), e.getValue());
+						}
 					}
 				}
 			}
@@ -129,17 +140,23 @@ public class SynthesisSettings extends Settings {
 			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
 			f.format("NET \"%s\" LOC=%s ", assignedSignal, ps.pinLocation);
 			for (final Entry<String, String> e : ps.attributes.entrySet()) {
-				if (PinSpec.PULL.equals(e.getKey())) {
+				switch (e.getKey()) {
+				case PinSpec.INVERT:
+					break;
+				case PinSpec.PULL:
 					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
 						f.format("| PULLDOWN ");
 					}
 					if (PinSpec.PULL_UP.equals(e.getValue())) {
 						f.format("| PULLUP ");
 					}
-				} else if (PinSpec.NO_VALUE.equals(e.getValue())) {
-					f.format("| %s ", e.getKey());
-				} else {
-					f.format("| %s = %s ", e.getKey(), e.getValue());
+					break;
+				default:
+					if (PinSpec.NO_VALUE.equals(e.getKey())) {
+						f.format("| %s ", e.getKey());
+					} else {
+						f.format("| %s = %s ", e.getKey(), e.getValue());
+					}
 				}
 			}
 			if (ps.timeSpec != null) {
@@ -150,7 +167,6 @@ public class SynthesisSettings extends Settings {
 				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
 			}
 		}
-
 	}
 
 }

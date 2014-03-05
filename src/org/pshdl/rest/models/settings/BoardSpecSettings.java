@@ -82,6 +82,12 @@ public class BoardSpecSettings extends Settings {
 		public static final String PULL_UP = "UP";
 		public static final String PULL_DOWN = "DOWN";
 		public static final String PULL = "PULL";
+		public static final String INVERT = "INVERT";
+
+		public static final String SIG_NONE = "#NONE";
+		public static final String SIG_OPEN = "#OPEN";
+		public static final String SIG_ALLONE = "#ALLONE";
+		public static final String SIG_ALLZERO = "#ALLZERO";
 
 		public static class TimeSpec {
 			@JsonProperty
