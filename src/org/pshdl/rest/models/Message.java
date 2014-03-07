@@ -61,6 +61,8 @@ public class Message<T> implements Comparable<Message<?>> {
 	public static final String COMP_JAVA_CODE = COMPILER + ":JAVA";
 	public static final String COMP_JAVA_SCRIPT_CODE = COMPILER + ":JAVASCRIPT";
 	public static final String COMP_SYNTHESIS = COMPILER + ":SYNTHESIS";
+	public static final String SERVICE = VENDOR + ":SERVICE";
+	public static final String SERVICE_DISCOVER = SERVICE + ":DISCOVER";
 	public static final String SYNTHESIS = VENDOR + ":SYNTHESIS";
 	public static final String SYNTHESIS_RUN = SYNTHESIS + ":RUN";
 	public static final String SYNTHESIS_PROGRESS = SYNTHESIS + ":PROGRESS";
