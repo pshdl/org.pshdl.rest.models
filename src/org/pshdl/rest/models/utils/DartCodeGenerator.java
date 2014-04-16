@@ -195,29 +195,13 @@ public class DartCodeGenerator {
 			simpleType = "I" + simpleType;
 		}
 		boolean isCollection = false;
-		if (Iterable.class.isAssignableFrom(returnType)) {
+		if (returnType.isArray()) {
+			isCollection = true;
+			simpleType = formatCollection(implemementation, name, returnType.getComponentType());
+		} else if (Iterable.class.isAssignableFrom(returnType)) {
 			final ParameterizedType genericReturnType = (ParameterizedType) generic;
 			final Type genericType = genericReturnType.getActualTypeArguments()[0];
-			final String type = genericType.toString();
-			String last = Iterators.getLast(Splitter.on('.').split(type).iterator());
-			last = Iterators.getLast(Splitter.on('$').split(last).iterator());
-			if (type.contains("pshdl")) {
-				simpleType = "Iterable<I" + last + ">";
-				implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();\n"//
-						+ "  @reflectable\n"//
-						+ "  %1$s get %3$s {\n"//
-						+ "    List list=_jsonMap[\"%3$s\"];\n"//
-						+ "    if (list==null) return [];\n"//
-						+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );\n" //
-						+ "  }\n\n",//
-						simpleType, last, name);
-			} else {
-				if (genericType.equals(Integer.class)) {
-					last = "int";
-				}
-				simpleType = "List<" + last + ">";
-				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal;\n" + "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n", name, simpleType);
-			}
+			simpleType = formatCollection(implemementation, name, genericType);
 			isCollection = true;
 		} else {
 			if (isPSHDLClass && !returnType.isEnum()) {
@@ -244,6 +228,31 @@ public class DartCodeGenerator {
 			abstractClass.format("=[]");
 		}
 		abstractClass.format(";\n");
+	}
+
+	public static String formatCollection(final Formatter implemementation, String name, final Type genericType) {
+		String simpleType;
+		final String type = genericType.toString();
+		String last = Iterators.getLast(Splitter.on('.').split(type).iterator());
+		last = Iterators.getLast(Splitter.on('$').split(last).iterator());
+		if (type.contains("pshdl")) {
+			simpleType = "Iterable<I" + last + ">";
+			implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();\n"//
+					+ "  @reflectable\n"//
+					+ "  %1$s get %3$s {\n"//
+					+ "    List list=_jsonMap[\"%3$s\"];\n"//
+					+ "    if (list==null) return [];\n"//
+					+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );\n" //
+					+ "  }\n\n",//
+					simpleType, last, name);
+		} else {
+			if (genericType.equals(Integer.class)) {
+				last = "int";
+			}
+			simpleType = "List<" + last + ">";
+			implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal;\n" + "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n", name, simpleType);
+		}
+		return simpleType;
 	}
 
 	public static String getSimpleType(final Class<?> returnType) {
