@@ -133,9 +133,10 @@ public class DartCodeGenerator {
 		} catch (final Exception e) {
 			System.err.println("DartCodeGenerator.generateClass() Class:" + clazz.getSimpleName() + " does not have a default constructor!");
 		}
+		final String simpleName = clazz.getSimpleName();
+		System.err.println("DartCodeGenerator.generateClass() Class:" + simpleName);
 		final Method[] methods = clazz.getDeclaredMethods();
 		final Formatter abstractClass = new Formatter();
-		final String simpleName = clazz.getSimpleName();
 		abstractClass.format("abstract class I%s {\n", simpleName);
 		final Formatter implemementation = new Formatter();
 		implemementation.format("class %1$s extends I%1$s {\n" //
@@ -147,6 +148,7 @@ public class DartCodeGenerator {
 				+ "  String toString() => JSON.encode(_jsonMap);\n"//
 				+ "  Map toJson() => _jsonMap;\n", simpleName);
 		for (final Method method : methods) {
+			System.err.println("DartCodeGenerator.generateClass() Method:" + method.getName());
 			if (method.isAnnotationPresent(JsonProperty.class)) {
 				String name = method.getName();
 				if (name.startsWith("get")) {
@@ -160,23 +162,27 @@ public class DartCodeGenerator {
 			}
 		}
 		for (final Field f : clazz.getFields()) {
+			System.err.println("DartCodeGenerator.generateClass() Field:" + f.getName());
+			final Class<?> type = f.getType();
 			if (f.isAnnotationPresent(JsonProperty.class)) {
-				format(abstractClass, implemementation, f.getName(), f.getType(), f.getGenericType());
+				format(abstractClass, implemementation, f.getName(), type, f.getGenericType());
 			}
 			final int mod = f.getModifiers();
 			if (Modifier.isPublic(mod) && Modifier.isFinal(mod) && Modifier.isStatic(mod)) {
-				final String simpleType = getSimpleType(f.getType());
-				try {
-					final Object object = f.get(null);
-					if (object instanceof String) {
-						abstractClass.format("  static const %s %s='%s';\n", simpleType, f.getName(), object);
-					} else {
-						abstractClass.format("  static const %s %s=%s;\n", simpleType, f.getName(), object.toString());
+				if (type.isPrimitive() || String.class.equals(type)) {
+					final String simpleType = getSimpleType(type);
+					try {
+						final Object object = f.get(null);
+						if (object instanceof String) {
+							abstractClass.format("  static const %s %s='%s';\n", simpleType, f.getName(), object);
+						} else {
+							abstractClass.format("  static const %s %s=%s;\n", simpleType, f.getName(), object.toString());
+						}
+					} catch (final IllegalArgumentException e) {
+						e.printStackTrace();
+					} catch (final IllegalAccessException e) {
+						e.printStackTrace();
 					}
-				} catch (final IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (final IllegalAccessException e) {
-					e.printStackTrace();
 				}
 			}
 		}
@@ -208,18 +214,18 @@ public class DartCodeGenerator {
 				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();\n"//
 						+ "  @reflectable\n" //
 						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);\n"//
-						, name, returnType.getSimpleName());
+				, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {
 					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;\n"//
 							+ "  @reflectable\n" //
 							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);\n"//
-							, name, simpleType);
+					, name, simpleType);
 				} else {
 					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;\n"//
 							+ "  @reflectable\n" //
 							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n"//
-							, name, simpleType);
+					, name, simpleType);
 				}
 			}
 		}
