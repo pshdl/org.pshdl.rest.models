@@ -26,12 +26,14 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import org.pshdl.model.validation.*;
+import org.pshdl.model.validation.HDLValidator;
 import org.pshdl.model.validation.HDLValidator.HDLAdvise;
+import org.pshdl.model.validation.Problem;
 import org.pshdl.model.validation.Problem.ProblemSeverity;
 
-import com.fasterxml.jackson.annotation.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("When a problem was found with the input file(s) this object contains all information about the problem")
 public class ProblemInfo {

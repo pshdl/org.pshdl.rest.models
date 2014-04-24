@@ -26,12 +26,12 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.util.*;
+import java.util.List;
 
 import org.pshdl.model.HDLPrimitive.HDLPrimitiveType;
 import org.pshdl.model.HDLVariableDeclaration.HDLDirection;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ModuleInformation {
 	public static class Port {

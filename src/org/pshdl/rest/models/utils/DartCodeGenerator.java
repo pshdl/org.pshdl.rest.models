@@ -26,27 +26,45 @@
  ******************************************************************************/
 package org.pshdl.rest.models.utils;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Formatter;
 
 import org.pshdl.model.HDLPrimitive.HDLPrimitiveType;
 import org.pshdl.model.HDLVariableDeclaration.HDLDirection;
 import org.pshdl.model.validation.Problem.ProblemSeverity;
-import org.pshdl.rest.models.*;
+import org.pshdl.rest.models.AdviseInfo;
+import org.pshdl.rest.models.CheckType;
+import org.pshdl.rest.models.CompileInfo;
+import org.pshdl.rest.models.FileInfo;
+import org.pshdl.rest.models.FileRecord;
+import org.pshdl.rest.models.FileType;
+import org.pshdl.rest.models.InstanceInfos;
 import org.pshdl.rest.models.InstanceInfos.FileInstances;
+import org.pshdl.rest.models.LocationInfo;
+import org.pshdl.rest.models.Message;
+import org.pshdl.rest.models.ModuleInformation;
 import org.pshdl.rest.models.ModuleInformation.Port;
 import org.pshdl.rest.models.ModuleInformation.UnitType;
+import org.pshdl.rest.models.ProblemInfo;
+import org.pshdl.rest.models.ProgressFeedback;
 import org.pshdl.rest.models.ProgressFeedback.ProgressType;
-import org.pshdl.rest.models.settings.*;
+import org.pshdl.rest.models.RepoInfo;
+import org.pshdl.rest.models.settings.BoardSpecSettings;
 import org.pshdl.rest.models.settings.BoardSpecSettings.FPGASpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec.Polarity;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec.TimeSpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpecGroup;
+import org.pshdl.rest.models.settings.InteractiveMap;
+import org.pshdl.rest.models.settings.SynthesisSettings;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.base.*;
-import com.google.common.collect.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterators;
 
 public class DartCodeGenerator {
 
@@ -214,18 +232,18 @@ public class DartCodeGenerator {
 				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();\n"//
 						+ "  @reflectable\n" //
 						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);\n"//
-				, name, returnType.getSimpleName());
+						, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {
 					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;\n"//
 							+ "  @reflectable\n" //
 							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);\n"//
-					, name, simpleType);
+							, name, simpleType);
 				} else {
 					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;\n"//
 							+ "  @reflectable\n" //
 							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n"//
-					, name, simpleType);
+							, name, simpleType);
 				}
 			}
 		}

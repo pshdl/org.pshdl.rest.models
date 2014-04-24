@@ -26,9 +26,9 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlEnum;
 
-import com.google.common.io.*;
+import com.google.common.io.Files;
 
 @XmlEnum(String.class)
 public enum FileType {

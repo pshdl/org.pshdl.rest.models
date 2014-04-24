@@ -26,14 +26,16 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
-import org.pshdl.rest.models.utils.*;
+import org.pshdl.rest.models.utils.RestConstants;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.hash.*;
-import com.google.common.io.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("Information about addtional output files")
 public class FileRecord {

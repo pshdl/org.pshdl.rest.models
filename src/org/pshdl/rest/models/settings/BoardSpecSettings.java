@@ -26,14 +26,16 @@
  ******************************************************************************/
 package org.pshdl.rest.models.settings;
 
-import java.math.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.pshdl.model.HDLVariableDeclaration.HDLDirection;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class BoardSpecSettings extends Settings {
 	public static class FPGASpec {

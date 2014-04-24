@@ -26,10 +26,11 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import org.pshdl.model.validation.*;
+import org.pshdl.model.validation.Problem;
 
-import com.fasterxml.jackson.annotation.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("Detailed position information for a problem")
 public class LocationInfo {

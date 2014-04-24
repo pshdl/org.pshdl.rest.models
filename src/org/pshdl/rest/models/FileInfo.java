@@ -26,12 +26,14 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("All information about a file")
 public class FileInfo implements Comparable<FileInfo> {

@@ -26,11 +26,12 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ComparisonChain;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("This message object is for communication inbetween workspace clients")
 @XmlRootElement

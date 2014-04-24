@@ -26,11 +26,11 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.util.*;
+import java.util.Set;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlEnum;
 
-import org.pshdl.model.validation.*;
+import org.pshdl.model.validation.Problem;
 
 @XmlEnum(String.class)
 public enum CheckType {

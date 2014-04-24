@@ -26,13 +26,16 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlTransient;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Sets;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("Information about this repository")
 public class RepoInfo {

@@ -26,13 +26,15 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import org.pshdl.model.validation.HDLValidator.HDLAdvise;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Contains information on how a problem could be fixed")
 public class AdviseInfo {

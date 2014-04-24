@@ -26,11 +26,11 @@
  ******************************************************************************/
 package org.pshdl.rest.models;
 
-import java.util.*;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
-import com.wordnik.swagger.annotations.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
+import com.wordnik.swagger.annotations.ApiModel;
 
 @ApiModel("All information from the compilation")
 public class CompileInfo {

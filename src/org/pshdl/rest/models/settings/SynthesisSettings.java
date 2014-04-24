@@ -26,14 +26,17 @@
  ******************************************************************************/
 package org.pshdl.rest.models.settings;
 
-import java.util.*;
+import java.util.Formatter;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpec;
 import org.pshdl.rest.models.settings.BoardSpecSettings.PinSpecGroup;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Sets;
 
 public class SynthesisSettings extends Settings {
 	public static final String VERSION = "0.1";

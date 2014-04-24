@@ -1,10 +1,12 @@
 package org.pshdl.rest.models.settings;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.annotation.*;
-import com.google.common.collect.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class InteractiveMap {
 
