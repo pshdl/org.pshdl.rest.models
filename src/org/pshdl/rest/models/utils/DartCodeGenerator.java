@@ -109,40 +109,42 @@ public class DartCodeGenerator {
 	}
 
 	public static String generateEnum(Class<?> clazz) {
-		final Formatter f = new Formatter();
-		final String simpleName = clazz.getSimpleName();
-		f.format("class %1$s {\n", simpleName);
-		final Enum<?>[] enumConstants = (Enum<?>[]) clazz.getEnumConstants();
-		final StringBuilder sb = new StringBuilder();
-		boolean first = true;
-		for (final Enum<?> e : enumConstants) {
-			f.format("  static const %1$s %2$s=const %1$s._create(%3$d,\"%2$s\");\n", simpleName, e.name(), e.ordinal());
-			if (!first) {
-				sb.append(", ");
+		try (final Formatter f = new Formatter()) {
+			final String simpleName = clazz.getSimpleName();
+			f.format("class %1$s {%n", simpleName);
+			final Enum<?>[] enumConstants = (Enum<?>[]) clazz.getEnumConstants();
+			if (enumConstants == null)
+				throw new IllegalArgumentException();
+			final StringBuilder sb = new StringBuilder();
+			boolean first = true;
+			for (final Enum<?> e : enumConstants) {
+				f.format("  static const %1$s %2$s=const %1$s._create(%3$d,\"%2$s\");%n", simpleName, e.name(), e.ordinal());
+				if (!first) {
+					sb.append(", ");
+				}
+				first = false;
+				sb.append(e.name());
 			}
-			first = false;
-			sb.append(e.name());
+			f.format("  static final List<%s> _values=[%s];%n", simpleName, sb);
+			f.format("  final int _id;%n"//
+					+ "  final String _name;%n"//
+					+ "  @reflectable%n"//
+					+ "  int get ordinal=>_id;%n"//
+					+ "  @reflectable%n"//
+					+ "  String get name=>_name;%n"//
+					+ "  %n"//
+					+ "  const %1$s._create(this._id, this._name);%n"//
+					+ "  %n"//
+					+ "  String toString()=>_name;%n"//
+					+ "  %n"//
+					+ "  static %1$s fromString(String name){%n"//
+					+ "    if (name==null) return null;%n"//
+					+ "    return _values.firstWhere((%1$s ct)=>ct.name==name);%n"//
+					+ "  }%n"//
+					+ "}", simpleName);
+			final String res = f.toString();
+			return res;
 		}
-		f.format("  static final List<%s> _values=[%s];\n", simpleName, sb);
-		f.format("  final int _id;\n"//
-				+ "  final String _name;\n"//
-				+ "  @reflectable\n"//
-				+ "  int get ordinal=>_id;\n"//
-				+ "  @reflectable\n"//
-				+ "  String get name=>_name;\n"//
-				+ "  \n"//
-				+ "  const %1$s._create(this._id, this._name);\n"//
-				+ "  \n"//
-				+ "  String toString()=>_name;\n"//
-				+ "  \n"//
-				+ "  static %1$s fromString(String name){\n"//
-				+ "    if (name==null) return null;\n"//
-				+ "    return _values.firstWhere((%1$s ct)=>ct.name==name);\n"//
-				+ "  }\n"//
-				+ "}", simpleName);
-		final String res = f.toString();
-		f.close();
-		return res;
 	}
 
 	public static String generateClass(Class<?> clazz) {
@@ -155,16 +157,16 @@ public class DartCodeGenerator {
 		System.err.println("DartCodeGenerator.generateClass() Class:" + simpleName);
 		final Method[] methods = clazz.getDeclaredMethods();
 		final Formatter abstractClass = new Formatter();
-		abstractClass.format("abstract class I%s {\n", simpleName);
+		abstractClass.format("abstract class I%s {%n", simpleName);
 		final Formatter implemementation = new Formatter();
-		implemementation.format("class %1$s extends I%1$s {\n" //
-				+ "  Map _jsonMap;\n"//
-				+ "  %1$s._create(this._jsonMap);\n\n"//
-				+ "  factory %1$s.empty() => new %1$s._create({});\n" //
-				+ "  factory %1$s.fromJson(Map map) => map==null ? null : new %1$s._create(map); \n" //
-				+ "  factory %1$s.fromJsonString(string) => new %1$s._create(JSON.decode(string));\n\n" //
-				+ "  String toString() => JSON.encode(_jsonMap);\n"//
-				+ "  Map toJson() => _jsonMap;\n", simpleName);
+		implemementation.format("class %1$s extends I%1$s {%n" //
+				+ "  Map _jsonMap;%n"//
+				+ "  %1$s._create(this._jsonMap);%n%n"//
+				+ "  factory %1$s.empty() => new %1$s._create({});%n" //
+				+ "  factory %1$s.fromJson(Map map) => map==null ? null : new %1$s._create(map); %n" //
+				+ "  factory %1$s.fromJsonString(string) => new %1$s._create(JSON.decode(string));%n%n" //
+				+ "  String toString() => JSON.encode(_jsonMap);%n"//
+				+ "  Map toJson() => _jsonMap;%n", simpleName);
 		for (final Method method : methods) {
 			System.err.println("DartCodeGenerator.generateClass() Method:" + method.getName());
 			if (method.isAnnotationPresent(JsonProperty.class)) {
@@ -192,9 +194,9 @@ public class DartCodeGenerator {
 					try {
 						final Object object = f.get(null);
 						if (object instanceof String) {
-							abstractClass.format("  static const %s %s='%s';\n", simpleType, f.getName(), object);
+							abstractClass.format("  static const %s %s='%s';%n", simpleType, f.getName(), object);
 						} else {
-							abstractClass.format("  static const %s %s=%s;\n", simpleType, f.getName(), object.toString());
+							abstractClass.format("  static const %s %s=%s;%n", simpleType, f.getName(), object.toString());
 						}
 					} catch (final IllegalArgumentException e) {
 						e.printStackTrace();
@@ -204,8 +206,8 @@ public class DartCodeGenerator {
 				}
 			}
 		}
-		abstractClass.format("  Map toJson();\n}\n");
-		implemementation.format("\n}\n");
+		abstractClass.format("  Map toJson();%n}%n");
+		implemementation.format("%n}%n");
 		final String f = abstractClass.toString() + implemementation.toString();
 		abstractClass.close();
 		implemementation.close();
@@ -229,21 +231,21 @@ public class DartCodeGenerator {
 			isCollection = true;
 		} else {
 			if (isPSHDLClass && !returnType.isEnum()) {
-				implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();\n"//
-						+ "  @reflectable\n" //
-						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);\n"//
-						, name, returnType.getSimpleName());
+				implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();%n"//
+						+ "  @reflectable%n" //
+						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);%n"//
+				, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {
-					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;\n"//
-							+ "  @reflectable\n" //
-							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);\n"//
-							, name, simpleType);
+					implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;%n"//
+							+ "  @reflectable%n" //
+							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);%n"//
+					, name, simpleType);
 				} else {
-					implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;\n"//
-							+ "  @reflectable\n" //
-							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n"//
-							, name, simpleType);
+					implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;%n"//
+							+ "  @reflectable%n" //
+							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];%n"//
+					, name, simpleType);
 				}
 			}
 		}
@@ -251,7 +253,7 @@ public class DartCodeGenerator {
 		if (isCollection) {
 			abstractClass.format("=[]");
 		}
-		abstractClass.format(";\n");
+		abstractClass.format(";%n");
 	}
 
 	public static String formatCollection(final Formatter implemementation, String name, final Type genericType) {
@@ -261,20 +263,20 @@ public class DartCodeGenerator {
 		last = Iterators.getLast(Splitter.on('$').split(last).iterator());
 		if (type.contains("pshdl")) {
 			simpleType = "Iterable<I" + last + ">";
-			implemementation.format("\n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();\n"//
-					+ "  @reflectable\n"//
-					+ "  %1$s get %3$s {\n"//
-					+ "    List list=_jsonMap[\"%3$s\"];\n"//
-					+ "    if (list==null) return [];\n"//
-					+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );\n" //
-					+ "  }\n\n",//
+			implemementation.format("%n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();%n"//
+					+ "  @reflectable%n"//
+					+ "  %1$s get %3$s {%n"//
+					+ "    List list=_jsonMap[\"%3$s\"];%n"//
+					+ "    if (list==null) return [];%n"//
+					+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );%n" //
+					+ "  }%n%n",//
 					simpleType, last, name);
 		} else {
 			if (genericType.equals(Integer.class)) {
 				last = "int";
 			}
 			simpleType = "List<" + last + ">";
-			implemementation.format("\n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal;\n" + "  %2$s get %1$s => _jsonMap[\"%1$s\"];\n", name, simpleType);
+			implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal;%n" + "  %2$s get %1$s => _jsonMap[\"%1$s\"];%n", name, simpleType);
 		}
 		return simpleType;
 	}
