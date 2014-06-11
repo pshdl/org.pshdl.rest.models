@@ -28,9 +28,68 @@ package org.pshdl.rest.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * A container for providing feedback when interacting with tools
+ *
+ * @author Karsten Becker
+ *
+ */
 public class ProgressFeedback {
 	public static enum ProgressType {
-		report, progress, output, done, information, warning, error
+		/**
+		 * A new report is available that might be of interest to the user<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be <code>null</code><br>
+		 * {@link ProgressFeedback#message} contains {@link FileRecord} as JSON
+		 */
+		report,
+		/**
+		 * Some progress has occurred<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be a number between (0..1)<br>
+		 * {@link ProgressFeedback#message} should contain a human readable
+		 * progress status i.e. what is done next
+		 */
+		progress,
+		/**
+		 * A tool produced some interesting/unexpected output<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be <code>null</code><br>
+		 * {@link ProgressFeedback#message} should contain the tool output
+		 */
+		output,
+		/**
+		 * The synthesis completed successfully<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be <code>null</code><br>
+		 * {@link ProgressFeedback#message} should contain the
+		 * {@link FileRecord} as JSON
+		 */
+		done,
+		/**
+		 * Some information regarding the synthesis<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be <code>null</code><br>
+		 * {@link ProgressFeedback#message} should contain a human readable
+		 * information
+		 */
+		information,
+		/**
+		 * A warning regarding the synthesis<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be <code>null</code><br>
+		 * {@link ProgressFeedback#message} should contain a human readable
+		 * warning
+		 */
+		warning,
+		/**
+		 * An error occurred and the synthesis has been aborted<br>
+		 *
+		 * {@link ProgressFeedback#progress} should be <code>null</code><br>
+		 * {@link ProgressFeedback#message} should contain a human readable
+		 * error
+		 */
+		error
 	}
 
 	@JsonProperty
