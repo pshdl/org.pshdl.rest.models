@@ -78,4 +78,53 @@ public class FileInfo implements Comparable<FileInfo> {
 	public void setInfo(CompileInfo ci) {
 		info = ci;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((category == null) ? 0 : category.hashCode());
+		result = (prime * result) + ((info == null) ? 0 : info.hashCode());
+		result = (prime * result) + ((moduleInfos == null) ? 0 : moduleInfos.hashCode());
+		result = (prime * result) + ((record == null) ? 0 : record.hashCode());
+		result = (prime * result) + ((syntax == null) ? 0 : syntax.hashCode());
+		result = (prime * result) + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final FileInfo other = (FileInfo) obj;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
+		if (info == null) {
+			if (other.info != null)
+				return false;
+		} else if (!info.equals(other.info))
+			return false;
+		if (moduleInfos == null) {
+			if (other.moduleInfos != null)
+				return false;
+		} else if (!moduleInfos.equals(other.moduleInfos))
+			return false;
+		if (record == null) {
+			if (other.record != null)
+				return false;
+		} else if (!record.equals(other.record))
+			return false;
+		if (syntax != other.syntax)
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
 }
