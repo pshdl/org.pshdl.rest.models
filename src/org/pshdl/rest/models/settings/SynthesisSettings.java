@@ -102,7 +102,7 @@ public class SynthesisSettings extends Settings {
 
 		@Override
 		public void append(Formatter f, PinSpec ps) {
-			f.format("# %s\n", ps.portName);
+			f.format("# %s%n", ps.portName);
 			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
 			f.format("set_io {%s} -pinname %s ", assignedSignal, ps.pinLocation);
 			if (ps.attributes != null) {
@@ -130,7 +130,7 @@ public class SynthesisSettings extends Settings {
 					}
 				}
 			}
-			f.format("\n");
+			f.format("%n");
 		}
 
 	}
@@ -139,35 +139,41 @@ public class SynthesisSettings extends Settings {
 
 		@Override
 		public void append(Formatter f, PinSpec ps) {
-			f.format("# %s\n", ps.portName);
+			if (ps.pinLocation.charAt(0) == '#') {
+				f.format("# Not mapping %s%n", ps.assignedSignal);
+				return;
+			}
+			f.format("# %s -> %s%n", ps.portName, ps.assignedSignal);
 			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
 			f.format("NET \"%s\" LOC=%s ", assignedSignal, ps.pinLocation);
-			for (final Entry<String, String> e : ps.attributes.entrySet()) {
-				switch (e.getKey()) {
-				case PinSpec.INVERT:
-					break;
-				case PinSpec.PULL:
-					if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-						f.format("| PULLDOWN ");
-					}
-					if (PinSpec.PULL_UP.equals(e.getValue())) {
-						f.format("| PULLUP ");
-					}
-					break;
-				default:
-					if (PinSpec.NO_VALUE.equals(e.getKey())) {
-						f.format("| %s ", e.getKey());
-					} else {
-						f.format("| %s = %s ", e.getKey(), e.getValue());
+			if (ps.attributes != null) {
+				for (final Entry<String, String> e : ps.attributes.entrySet()) {
+					switch (e.getKey()) {
+					case PinSpec.INVERT:
+						break;
+					case PinSpec.PULL:
+						if (PinSpec.PULL_DOWN.equals(e.getValue())) {
+							f.format("| PULLDOWN ");
+						}
+						if (PinSpec.PULL_UP.equals(e.getValue())) {
+							f.format("| PULLUP ");
+						}
+						break;
+					default:
+						if (PinSpec.NO_VALUE.equals(e.getValue())) {
+							f.format("| %s ", e.getKey());
+						} else {
+							f.format("| %s = %s ", e.getKey(), e.getValue());
+						}
 					}
 				}
 			}
 			if (ps.timeSpec != null) {
 				f.format("| TNM_NET = \"%s\"", assignedSignal);
 			}
-			f.format(";\n");
+			f.format(";%n");
 			if (ps.timeSpec != null) {
-				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;\n", assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
+				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;%n", assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
 			}
 		}
 	}

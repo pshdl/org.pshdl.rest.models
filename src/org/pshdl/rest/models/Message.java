@@ -37,6 +37,9 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @XmlRootElement
 public class Message<T> implements Comparable<Message<?>> {
 	public static final String VENDOR = "P";
+	/**
+	 * This denotes all operations that are related to the workspace
+	 */
 	public static final String WORKSPACE = VENDOR + ":WORKSPACE";
 	/**
 	 * The msgType is the {@link FileInfo} that was removed
@@ -54,12 +57,33 @@ public class Message<T> implements Comparable<Message<?>> {
 	 * The msgTyps is the {@link RepoInfo} of the newly created workspace
 	 */
 	public static final String WORK_CREATED_WORKSPACE = WORKSPACE + ":CREATED_WORKSPACE";
+	/**
+	 * This denotes all messages related to compiler output
+	 */
 	public static final String COMPILER = VENDOR + ":COMPILER";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_VHDL = COMPILER + ":VHDL";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_PSEX = COMPILER + ":PSEX";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_C_CODE = COMPILER + ":C";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_DART_CODE = COMPILER + ":DART";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_JAVA_CODE = COMPILER + ":JAVA";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_JAVA_SCRIPT_CODE = COMPILER + ":JAVASCRIPT";
 	public static final String COMP_SYNTHESIS = COMPILER + ":SYNTHESIS";
 	public static final String SERVICE = VENDOR + ":SERVICE";

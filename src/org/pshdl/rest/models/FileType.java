@@ -32,17 +32,18 @@ import com.google.common.io.Files;
 
 @XmlEnum(String.class)
 public enum FileType {
-	pshdl("lang-pshdl", "text/plain"), //
-	vhdl("lang-vhdl", "text/plain"), //
-	verilog("lang-verilog", "text/plain"), //
-	markdown("lang-text", "text/plain"), //
-	cpp("lang-cpp", "text/plain"), //
-	html("lang-html", "text/html"), //
-	cHeader("lang-cpp", "text/plain"), //
-	javascript("lang-javascript", "application/javascript"), //
-	json("lang-javascript", "application/javascript"), //
-	dart("lang-dart", "application/dart"), //
-	unknown("lang-text", "text/plain");
+	pshdl("lang-pshdl", "text/plain", ".pshdl"), //
+	vhdl("lang-vhdl", "text/plain", ".vhdl"), //
+	verilog("lang-verilog", "text/plain", ".v"), //
+	markdown("lang-text", "text/plain", ".md"), //
+	c("lang-c", "text/plain", ".c"), //
+	cpp("lang-cpp", "text/plain", ".cpp"), //
+	html("lang-html", "text/html", ".html"), //
+	cHeader("lang-cpp", "text/plain", ".h"), //
+	javascript("lang-javascript", "application/javascript", ".js"), //
+	json("lang-javascript", "application/javascript", ".json"), //
+	dart("lang-dart", "application/dart", ".dart"), //
+	unknown("lang-text", "text/plain", null);
 
 	public static FileType of(String name) {
 		final String extension = Files.getFileExtension(name);
@@ -50,25 +51,21 @@ public enum FileType {
 		case "pshdl":
 			return pshdl;
 		case "vhdl":
-			return vhdl;
 		case "vhd":
 			return vhdl;
 		case "v":
-			return verilog;
 		case "sv":
 			return verilog;
 		case "md":
-			return markdown;
 		case "markdown":
 			return markdown;
 		case "c":
-			return cpp;
+			return c;
 		case "cpp":
 			return cpp;
 		case "h":
 			return cHeader;
 		case "htm":
-			return html;
 		case "html":
 			return html;
 		case "dart":
@@ -84,9 +81,11 @@ public enum FileType {
 
 	public final String prettify;
 	public final String mime;
+	public final String extension;
 
-	FileType(String prettify, String mime) {
+	FileType(String prettify, String mime, String extension) {
 		this.prettify = prettify;
 		this.mime = mime;
+		this.extension = extension;
 	}
 }
