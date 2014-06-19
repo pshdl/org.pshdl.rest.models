@@ -234,18 +234,18 @@ public class DartCodeGenerator {
 				implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();%n"//
 						+ "  @reflectable%n" //
 						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);%n"//
-				, name, returnType.getSimpleName());
+						, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {
 					implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;%n"//
 							+ "  @reflectable%n" //
 							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);%n"//
-					, name, simpleType);
+							, name, simpleType);
 				} else {
 					implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;%n"//
 							+ "  @reflectable%n" //
 							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];%n"//
-					, name, simpleType);
+							, name, simpleType);
 				}
 			}
 		}
