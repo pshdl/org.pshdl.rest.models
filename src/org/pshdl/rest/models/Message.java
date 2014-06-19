@@ -85,6 +85,9 @@ public class Message<T> implements Comparable<Message<?>> {
 	 * The msgType is an array of {@link CompileInfo}
 	 */
 	public static final String COMP_JAVA_SCRIPT_CODE = COMPILER + ":JAVASCRIPT";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_SYNTHESIS = COMPILER + ":SYNTHESIS";
 	public static final String SERVICE = VENDOR + ":SERVICE";
 	public static final String SERVICE_DISCOVER = SERVICE + ":DISCOVER";
