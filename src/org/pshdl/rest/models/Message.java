@@ -80,6 +80,10 @@ public class Message<T> implements Comparable<Message<?>> {
 	/**
 	 * The msgType is an array of {@link CompileInfo}
 	 */
+	public static final String COMP_GO_CODE = COMPILER + ":GO";
+	/**
+	 * The msgType is an array of {@link CompileInfo}
+	 */
 	public static final String COMP_JAVA_CODE = COMPILER + ":JAVA";
 	/**
 	 * The msgType is an array of {@link CompileInfo}
