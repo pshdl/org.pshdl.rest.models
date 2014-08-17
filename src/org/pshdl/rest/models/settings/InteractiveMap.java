@@ -50,7 +50,7 @@ public class InteractiveMap {
 		super();
 		this.svg = svg;
 		if (idMaps != null) {
-			this.idMaps = Maps.newHashMap();
+			this.idMaps = Maps.newLinkedHashMap();
 			for (final Entry<String, ? extends Iterable<String>> e : idMaps.entrySet()) {
 				this.idMaps.put(e.getKey(), Lists.newLinkedList(e.getValue()));
 			}

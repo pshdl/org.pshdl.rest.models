@@ -153,7 +153,7 @@ public class BoardSpecSettings extends Settings {
 		public final HDLDirection direction;
 
 		public PinSpec() {
-			this(null, null, null, Maps.<String, String> newHashMap(), null, null, null);
+			this(null, null, null, Maps.<String, String> newLinkedHashMap(), null, null, null);
 		}
 
 		public PinSpec(String portName, String pinLocation, String description, Map<String, String> attributes, TimeSpec timeSpec, Polarity polarity, HDLDirection direction) {
