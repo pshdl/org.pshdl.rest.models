@@ -231,21 +231,24 @@ public class DartCodeGenerator {
 			isCollection = true;
 		} else {
 			if (isPSHDLClass && !returnType.isEnum()) {
-				implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();%n"//
-						+ "  @reflectable%n" //
-						+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);%n"//
-				, name, returnType.getSimpleName());
+				implemementation.format(
+						"%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.toJson();%n"//
+								+ "  @reflectable%n" //
+								+ "  %2$s get %1$s => new %2$s.fromJson(_jsonMap[\"%1$s\"]);%n"//
+						, name, returnType.getSimpleName());
 			} else {
 				if (returnType.isEnum()) {
-					implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;%n"//
-							+ "  @reflectable%n" //
-							+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);%n"//
-					, name, simpleType);
+					implemementation.format(
+							"%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"] = newVal==null?null:newVal.name;%n"//
+									+ "  @reflectable%n" //
+									+ "  %2$s get %1$s => %2$s.fromString(_jsonMap[\"%1$s\"]);%n"//
+							, name, simpleType);
 				} else {
-					implemementation.format("%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;%n"//
-							+ "  @reflectable%n" //
-							+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];%n"//
-					, name, simpleType);
+					implemementation.format(
+							"%n  set %1$s(%2$s newVal) => _jsonMap[\"%1$s\"]=newVal;%n"//
+									+ "  @reflectable%n" //
+									+ "  %2$s get %1$s => _jsonMap[\"%1$s\"];%n"//
+							, name, simpleType);
 				}
 			}
 		}
@@ -263,13 +266,14 @@ public class DartCodeGenerator {
 		last = Iterators.getLast(Splitter.on('$').split(last).iterator());
 		if (type.contains("pshdl")) {
 			simpleType = "Iterable<I" + last + ">";
-			implemementation.format("%n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();%n"//
-					+ "  @reflectable%n"//
-					+ "  %1$s get %3$s {%n"//
-					+ "    List list=_jsonMap[\"%3$s\"];%n"//
-					+ "    if (list==null) return [];%n"//
-					+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );%n" //
-					+ "  }%n%n",//
+			implemementation.format(
+					"%n  set %3$s(%1$s newList) => _jsonMap[\"%3$s\"] = newList.map((I%2$s o)=>o.toJson()).toList();%n"//
+							+ "  @reflectable%n"//
+							+ "  %1$s get %3$s {%n"//
+							+ "    List list=_jsonMap[\"%3$s\"];%n"//
+							+ "    if (list==null) return [];%n"//
+							+ "    return list.where((o) => o!=null).map( (o) => new %2$s.fromJson(o) );%n" //
+							+ "  }%n%n", //
 					simpleType, last, name);
 		} else {
 			if (genericType.equals(Integer.class)) {

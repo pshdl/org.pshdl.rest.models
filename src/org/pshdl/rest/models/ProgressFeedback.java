@@ -46,7 +46,8 @@ public class ProgressFeedback {
 		/**
 		 * Some progress has occurred<br>
 		 *
-		 * {@link ProgressFeedback#progress} should be a number between (0..1)<br>
+		 * {@link ProgressFeedback#progress} should be a number between (0..1)
+		 * <br>
 		 * {@link ProgressFeedback#message} should contain a human readable
 		 * progress status i.e. what is done next
 		 */
