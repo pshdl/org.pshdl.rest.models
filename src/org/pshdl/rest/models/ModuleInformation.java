@@ -34,63 +34,63 @@ import org.pshdl.model.HDLVariableDeclaration.HDLDirection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ModuleInformation {
-	public static class Port {
-		@JsonProperty
-		public final String name;
-		@JsonProperty
-		public final HDLDirection dir;
-		@JsonProperty
-		public final HDLPrimitiveType primitive;
-		@JsonProperty
-		public final String enumRef;
-		@JsonProperty
-		public final String defaultValue;
-		@JsonProperty
-		public final int width;
-		@JsonProperty
-		public final List<Integer> dimensions;
-		@JsonProperty
-		public final List<String> annotations;
+    public static class Port {
+        @JsonProperty
+        public final String name;
+        @JsonProperty
+        public final HDLDirection dir;
+        @JsonProperty
+        public final HDLPrimitiveType primitive;
+        @JsonProperty
+        public final String enumRef;
+        @JsonProperty
+        public final String defaultValue;
+        @JsonProperty
+        public final int width;
+        @JsonProperty
+        public final List<Integer> dimensions;
+        @JsonProperty
+        public final List<String> annotations;
 
-		public Port() {
-			this(null, null, null, null, -1, null, null, null);
-		}
+        public Port() {
+            this(null, null, null, null, -1, null, null, null);
+        }
 
-		public Port(String name, HDLDirection dir, HDLPrimitiveType primitive, String enumRef, int width, List<Integer> dimensions, List<String> annotations, String defaultValue) {
-			super();
-			this.name = name;
-			this.dir = dir;
-			this.primitive = primitive;
-			this.enumRef = enumRef;
-			this.width = width;
-			this.dimensions = dimensions;
-			this.annotations = annotations;
-			this.defaultValue = defaultValue;
-		}
-	}
+        public Port(String name, HDLDirection dir, HDLPrimitiveType primitive, String enumRef, int width, List<Integer> dimensions, List<String> annotations, String defaultValue) {
+            super();
+            this.name = name;
+            this.dir = dir;
+            this.primitive = primitive;
+            this.enumRef = enumRef;
+            this.width = width;
+            this.dimensions = dimensions;
+            this.annotations = annotations;
+            this.defaultValue = defaultValue;
+        }
+    }
 
-	public static enum UnitType {
-		ENUM, MODULE, INTERFACE, TESTBENCH
-	}
+    public static enum UnitType {
+        ENUM, MODULE, INTERFACE, TESTBENCH
+    }
 
-	@JsonProperty
-	public final String name;
-	@JsonProperty
-	public final List<Port> ports;
-	@JsonProperty
-	public final List<String> instances;
-	@JsonProperty
-	public final UnitType type;
+    @JsonProperty
+    public final String name;
+    @JsonProperty
+    public final List<Port> ports;
+    @JsonProperty
+    public final List<String> instances;
+    @JsonProperty
+    public final UnitType type;
 
-	public ModuleInformation() {
-		this(null, null, null, null);
-	}
+    public ModuleInformation() {
+        this(null, null, null, null);
+    }
 
-	public ModuleInformation(String name, List<Port> ports, List<String> instances, UnitType type) {
-		super();
-		this.name = name;
-		this.ports = ports;
-		this.instances = instances;
-		this.type = type;
-	}
+    public ModuleInformation(String name, List<Port> ports, List<String> instances, UnitType type) {
+        super();
+        this.name = name;
+        this.ports = ports;
+        this.instances = instances;
+        this.type = type;
+    }
 }

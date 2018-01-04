@@ -38,70 +38,75 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @ApiModel("All information about a file")
 public class FileInfo implements Comparable<FileInfo> {
 
-	@JsonProperty
-	@ApiModelProperty("If this file has been compiled or verified the information is stored here")
-	public CompileInfo info;
+    @JsonProperty
+    @ApiModelProperty("If this file has been compiled or verified the information is stored here")
+    public CompileInfo info;
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "A sub specification of for example json files, which can be settings")
-	public String category;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "A sub specification of for example json files, which can be settings")
+    public String category;
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "Information about this file")
-	public FileRecord record;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "Information about this file")
+    public FileRecord record;
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The syntax status of this file")
-	public CheckType syntax;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "The syntax status of this file")
+    public CheckType syntax;
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The type of this file")
-	public FileType type;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "The type of this file")
+    public FileType type;
 
-	@JsonProperty
-	public List<ModuleInformation> moduleInfos = Lists.newArrayList();
+    @JsonProperty
+    public List<ModuleInformation> moduleInfos = Lists.newArrayList();
 
-	public FileInfo() {
-	}
+    public FileInfo() {
+    }
 
-	public void setFromFile(File f, CheckType syntax, String wid, File relDir) throws IOException {
-		this.record = new FileRecord(f, relDir, wid);
-		this.syntax = syntax;
-		this.type = FileType.of(f.getName());
-	}
+    public void setFromFile(File f, CheckType syntax, String wid, File relDir) throws IOException {
+        this.record = new FileRecord(f, relDir, wid);
+        this.syntax = syntax;
+        this.type = FileType.of(f.getName());
+    }
 
-	@Override
-	public int compareTo(FileInfo o) {
-		return record.relPath.compareTo(o.record.relPath);
-	}
+    @Override
+    public int compareTo(FileInfo o) {
+        return record.relPath.compareTo(o.record.relPath);
+    }
 
-	public void setInfo(CompileInfo ci) {
-		info = ci;
-	}
+    public void setInfo(CompileInfo ci) {
+        info = ci;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((record == null) ? 0 : record.relPath.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((record == null) ? 0 : record.relPath.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final FileInfo other = (FileInfo) obj;
-		if (record == null) {
-			if (other.record != null)
-				return false;
-		} else if (!record.relPath.equals(other.record.relPath))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FileInfo other = (FileInfo) obj;
+        if (record == null) {
+            if (other.record != null) {
+                return false;
+            }
+        } else if (!record.relPath.equals(other.record.relPath)) {
+            return false;
+        }
+        return true;
+    }
 
 }

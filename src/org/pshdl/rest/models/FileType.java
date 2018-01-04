@@ -32,60 +32,60 @@ import com.google.common.io.Files;
 
 @XmlEnum(String.class)
 public enum FileType {
-	pshdl("lang-pshdl", "text/plain", ".pshdl"), //
-	vhdl("lang-vhdl", "text/plain", ".vhdl"), //
-	verilog("lang-verilog", "text/plain", ".v"), //
-	markdown("lang-text", "text/plain", ".md"), //
-	c("lang-c", "text/plain", ".c"), //
-	cpp("lang-cpp", "text/plain", ".cpp"), //
-	html("lang-html", "text/html", ".html"), //
-	cHeader("lang-cpp", "text/plain", ".h"), //
-	javascript("lang-javascript", "application/javascript", ".js"), //
-	json("lang-javascript", "application/javascript", ".json"), //
-	dart("lang-dart", "application/dart", ".dart"), //
-	unknown("lang-text", "text/plain", null);
+    pshdl("lang-pshdl", "text/plain", ".pshdl"), //
+    vhdl("lang-vhdl", "text/plain", ".vhdl"), //
+    verilog("lang-verilog", "text/plain", ".v"), //
+    markdown("lang-text", "text/plain", ".md"), //
+    c("lang-c", "text/plain", ".c"), //
+    cpp("lang-cpp", "text/plain", ".cpp"), //
+    html("lang-html", "text/html", ".html"), //
+    cHeader("lang-cpp", "text/plain", ".h"), //
+    javascript("lang-javascript", "application/javascript", ".js"), //
+    json("lang-javascript", "application/javascript", ".json"), //
+    dart("lang-dart", "application/dart", ".dart"), //
+    unknown("lang-text", "text/plain", null);
 
-	public static FileType of(String name) {
-		final String extension = Files.getFileExtension(name);
-		switch (extension) {
-		case "pshdl":
-			return pshdl;
-		case "vhdl":
-		case "vhd":
-			return vhdl;
-		case "v":
-		case "sv":
-			return verilog;
-		case "md":
-		case "markdown":
-			return markdown;
-		case "c":
-			return c;
-		case "cpp":
-			return cpp;
-		case "h":
-			return cHeader;
-		case "htm":
-		case "html":
-			return html;
-		case "dart":
-			return dart;
-		case "json":
-			return json;
-		case "js":
-			return javascript;
-		default:
-			return unknown;
-		}
-	}
+    public static FileType of(String name) {
+        final String extension = Files.getFileExtension(name);
+        switch (extension) {
+        case "pshdl":
+            return pshdl;
+        case "vhdl":
+        case "vhd":
+            return vhdl;
+        case "v":
+        case "sv":
+            return verilog;
+        case "md":
+        case "markdown":
+            return markdown;
+        case "c":
+            return c;
+        case "cpp":
+            return cpp;
+        case "h":
+            return cHeader;
+        case "htm":
+        case "html":
+            return html;
+        case "dart":
+            return dart;
+        case "json":
+            return json;
+        case "js":
+            return javascript;
+        default:
+            return unknown;
+        }
+    }
 
-	public final String prettify;
-	public final String mime;
-	public final String extension;
+    public final String prettify;
+    public final String mime;
+    public final String extension;
 
-	FileType(String prettify, String mime, String extension) {
-		this.prettify = prettify;
-		this.mime = mime;
-		this.extension = extension;
-	}
+    FileType(String prettify, String mime, String extension) {
+        this.prettify = prettify;
+        this.mime = mime;
+        this.extension = extension;
+    }
 }

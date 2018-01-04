@@ -27,30 +27,30 @@
 package org.pshdl.rest.models.utils;
 
 public class RestConstants {
-	public static final String BASEURL = "http://api.pshdl.org";
-	public static final String VERSION = "v0.1";
-	public static final String BASEPATH = "/api/" + VERSION;
-	public static final String WORKSPACE = "/workspace";
-	public static final String BOARDS = "/boards";
-	public static final String COMPILER = "/compiler";
-	public static final String STREAMING = "/streaming";
+    public static final String BASEURL = "http://api.pshdl.org";
+    public static final String VERSION = "v0.1";
+    public static final String BASEPATH = "/api/" + VERSION;
+    public static final String WORKSPACE = "/workspace";
+    public static final String BOARDS = "/boards";
+    public static final String COMPILER = "/compiler";
+    public static final String STREAMING = "/streaming";
 
-	public static final String OUTPUTDIR = "src-gen";
+    public static final String OUTPUTDIR = "src-gen";
 
-	public static String getWorkspaceURI(String wid) {
-		return RestConstants.BASEPATH + RestConstants.WORKSPACE + "/" + wid;
-	}
+    public static String getWorkspaceURI(String wid) {
+        return RestConstants.BASEPATH + RestConstants.WORKSPACE + "/" + wid;
+    }
 
-	public static String getWorkspaceGenOutputURI(String wid) {
-		return RestConstants.BASEPATH + RestConstants.WORKSPACE + "/" + wid + "/" + RestConstants.OUTPUTDIR;
-	}
+    public static String getWorkspaceGenOutputURI(String wid) {
+        return RestConstants.BASEPATH + RestConstants.WORKSPACE + "/" + wid + "/" + RestConstants.OUTPUTDIR;
+    }
 
-	public static String getWorkspceCompilerURI(String wid) {
-		return RestConstants.BASEPATH + RestConstants.COMPILER + "/" + wid;
-	}
+    public static String getWorkspceCompilerURI(String wid) {
+        return RestConstants.BASEPATH + RestConstants.COMPILER + "/" + wid;
+    }
 
-	public static String toWorkspaceURI(String wid, String relPath) {
-		return RestConstants.getWorkspaceURI(wid) + "/" + relPath.replaceAll("\\/", ":");
-	}
+    public static String toWorkspaceURI(String wid, String relPath) {
+        return RestConstants.getWorkspaceURI(wid) + "/" + relPath.replaceAll("\\/", ":");
+    }
 
 }

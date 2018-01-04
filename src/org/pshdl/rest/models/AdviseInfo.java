@@ -39,105 +39,111 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "Contains information on how a problem could be fixed")
 public class AdviseInfo {
 
-	private String explanation;
+    private String explanation;
 
-	private String message;
+    private String message;
 
-	private List<String> solutions;
+    private List<String> solutions;
 
-	public AdviseInfo() {
-		solutions = Lists.newLinkedList();
-	}
+    public AdviseInfo() {
+        solutions = Lists.newLinkedList();
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final AdviseInfo other = (AdviseInfo) obj;
-		if (explanation == null) {
-			if (other.explanation != null)
-				return false;
-		} else if (!explanation.equals(other.explanation))
-			return false;
-		if (message == null) {
-			if (other.message != null)
-				return false;
-		} else if (!message.equals(other.message))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AdviseInfo other = (AdviseInfo) obj;
+        if (explanation == null) {
+            if (other.explanation != null) {
+                return false;
+            }
+        } else if (!explanation.equals(other.explanation)) {
+            return false;
+        }
+        if (message == null) {
+            if (other.message != null) {
+                return false;
+            }
+        } else if (!message.equals(other.message)) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * A human readable explanation of why this problem was caused that goes a
-	 * little more in-depth than the {@link #getMessage()}.
-	 *
-	 * @return non-null explanation
-	 */
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "A human readable explanation of why this problem was caused that goes a little more in-depth than the message")
-	public String getExplanation() {
-		return this.explanation;
-	}
+    /**
+     * A human readable explanation of why this problem was caused that goes a little more in-depth than the {@link #getMessage()}.
+     *
+     * @return non-null explanation
+     */
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "A human readable explanation of why this problem was caused that goes a little more in-depth than the message")
+    public String getExplanation() {
+        return this.explanation;
+    }
 
-	/**
-	 * A human readable explanation of why this problem was caused
-	 *
-	 * @return non-null message
-	 */
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "A human readable explanation of why this problem was caused")
-	public String getMessage() {
-		return this.message;
-	}
+    /**
+     * A human readable explanation of why this problem was caused
+     *
+     * @return non-null message
+     */
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "A human readable explanation of why this problem was caused")
+    public String getMessage() {
+        return this.message;
+    }
 
-	/**
-	 * A list of possible human readable solutions to solve that problem
-	 *
-	 * @return non-null list of possible solutions
-	 */
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "A list of possible human readable solutions to solve that problem")
-	public List<String> getSolutions() {
-		return this.solutions;
-	}
+    /**
+     * A list of possible human readable solutions to solve that problem
+     *
+     * @return non-null list of possible solutions
+     */
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "A list of possible human readable solutions to solve that problem")
+    public List<String> getSolutions() {
+        return this.solutions;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((explanation == null) ? 0 : explanation.hashCode());
-		result = (prime * result) + ((message == null) ? 0 : message.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((explanation == null) ? 0 : explanation.hashCode());
+        result = (prime * result) + ((message == null) ? 0 : message.hashCode());
+        return result;
+    }
 
-	public void setExplanation(final String explanation) {
-		this.explanation = explanation;
-	}
+    public void setExplanation(final String explanation) {
+        this.explanation = explanation;
+    }
 
-	public void setFromAdvise(HDLAdvise advise) {
-		this.setExplanation(advise.explanation);
-		this.setMessage(advise.message);
-		this.setSolutions(Arrays.asList(advise.solutions));
-	}
+    public void setFromAdvise(HDLAdvise advise) {
+        this.setExplanation(advise.explanation);
+        this.setMessage(advise.message);
+        this.setSolutions(Arrays.asList(advise.solutions));
+    }
 
-	public void setMessage(final String message) {
-		this.message = message;
-	}
+    public void setMessage(final String message) {
+        this.message = message;
+    }
 
-	public void setSolutions(final List<String> solutions) {
-		this.solutions = solutions;
-	}
+    public void setSolutions(final List<String> solutions) {
+        this.solutions = solutions;
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("AdviseInfo [message=");
-		builder.append(getMessage());
-		builder.append("]");
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("AdviseInfo [message=");
+        builder.append(getMessage());
+        builder.append("]");
+        return builder.toString();
+    }
 }

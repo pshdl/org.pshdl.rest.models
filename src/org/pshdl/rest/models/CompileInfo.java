@@ -35,96 +35,106 @@ import com.wordnik.swagger.annotations.ApiModel;
 @ApiModel("All information from the compilation")
 public class CompileInfo {
 
-	private List<FileRecord> files = Lists.newLinkedList();
+    private List<FileRecord> files = Lists.newLinkedList();
 
-	private List<ProblemInfo> problems = Lists.newLinkedList();
+    private List<ProblemInfo> problems = Lists.newLinkedList();
 
-	private long created;
+    private long created;
 
-	private String creator;
+    private String creator;
 
-	public CompileInfo() {
-	}
+    public CompileInfo() {
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + (int) (created ^ (created >>> 32));
-		result = (prime * result) + ((creator == null) ? 0 : creator.hashCode());
-		result = (prime * result) + ((files == null) ? 0 : files.hashCode());
-		result = (prime * result) + ((problems == null) ? 0 : problems.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + (int) (created ^ (created >>> 32));
+        result = (prime * result) + ((creator == null) ? 0 : creator.hashCode());
+        result = (prime * result) + ((files == null) ? 0 : files.hashCode());
+        result = (prime * result) + ((problems == null) ? 0 : problems.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final CompileInfo other = (CompileInfo) obj;
-		if (created != other.created)
-			return false;
-		if (creator == null) {
-			if (other.creator != null)
-				return false;
-		} else if (!creator.equals(other.creator))
-			return false;
-		if (files == null) {
-			if (other.files != null)
-				return false;
-		} else if (!files.equals(other.files))
-			return false;
-		if (problems == null) {
-			if (other.problems != null)
-				return false;
-		} else if (!problems.equals(other.problems))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CompileInfo other = (CompileInfo) obj;
+        if (created != other.created) {
+            return false;
+        }
+        if (creator == null) {
+            if (other.creator != null) {
+                return false;
+            }
+        } else if (!creator.equals(other.creator)) {
+            return false;
+        }
+        if (files == null) {
+            if (other.files != null) {
+                return false;
+            }
+        } else if (!files.equals(other.files)) {
+            return false;
+        }
+        if (problems == null) {
+            if (other.problems != null) {
+                return false;
+            }
+        } else if (!problems.equals(other.problems)) {
+            return false;
+        }
+        return true;
+    }
 
-	@JsonProperty
-	public long getCreated() {
-		return created;
-	}
+    @JsonProperty
+    public long getCreated() {
+        return created;
+    }
 
-	public void setCreated(long created) {
-		this.created = created;
-	}
+    public void setCreated(long created) {
+        this.created = created;
+    }
 
-	@JsonProperty
-	public String getCreator() {
-		return creator;
-	}
+    @JsonProperty
+    public String getCreator() {
+        return creator;
+    }
 
-	public void setCreator(String creator) {
-		this.creator = creator;
-	}
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 
-	@JsonProperty
-	public List<FileRecord> getFiles() {
-		return files;
-	}
+    @JsonProperty
+    public List<FileRecord> getFiles() {
+        return files;
+    }
 
-	@JsonProperty
-	public List<ProblemInfo> getProblems() {
-		return problems;
-	}
+    @JsonProperty
+    public List<ProblemInfo> getProblems() {
+        return problems;
+    }
 
-	@Override
-	public String toString() {
-		return "CompileInfo [files=" + files + ", problems=" + problems + ", created=" + created + ", creator=" + creator + "]";
-	}
+    @Override
+    public String toString() {
+        return "CompileInfo [files=" + files + ", problems=" + problems + ", created=" + created + ", creator=" + creator + "]";
+    }
 
-	public void setProblems(List<ProblemInfo> problems) {
-		this.problems = problems;
-	}
+    public void setProblems(List<ProblemInfo> problems) {
+        this.problems = problems;
+    }
 
-	public void setFiles(List<FileRecord> files) {
-		this.files = files;
-	}
+    public void setFiles(List<FileRecord> files) {
+        this.files = files;
+    }
 
 }

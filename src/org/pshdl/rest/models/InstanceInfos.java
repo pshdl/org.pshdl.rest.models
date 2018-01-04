@@ -31,34 +31,34 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class InstanceInfos {
-	public static class FileInstances {
-		@JsonProperty
-		public final String fileName;
-		@JsonProperty
-		public final List<ModuleInformation> infos;
+    public static class FileInstances {
+        @JsonProperty
+        public final String fileName;
+        @JsonProperty
+        public final List<ModuleInformation> infos;
 
-		public FileInstances() {
-			this(null, null);
-		}
+        public FileInstances() {
+            this(null, null);
+        }
 
-		public FileInstances(String fileName, List<ModuleInformation> infos) {
-			super();
-			this.fileName = fileName;
-			this.infos = infos;
-		}
+        public FileInstances(String fileName, List<ModuleInformation> infos) {
+            super();
+            this.fileName = fileName;
+            this.infos = infos;
+        }
 
-	}
+    }
 
-	@JsonProperty
-	public final List<FileInstances> infos;
+    @JsonProperty
+    public final List<FileInstances> infos;
 
-	public InstanceInfos() {
-		this(null);
-	}
+    public InstanceInfos() {
+        this(null);
+    }
 
-	public InstanceInfos(List<FileInstances> infos) {
-		super();
-		this.infos = infos;
-	}
+    public InstanceInfos(List<FileInstances> infos) {
+        super();
+        this.infos = infos;
+    }
 
 }

@@ -39,143 +39,143 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Sets;
 
 public class SynthesisSettings extends Settings {
-	public static final String VERSION = "0.1";
-	public static final String SYNTHESIS = "Synthesis";
-	@JsonProperty
-	public final String board;
-	@JsonProperty
-	public final String topModule;
-	@JsonProperty
-	public final List<PinSpec> overrides;
-	@JsonProperty
-	public final Map<String, String> overrideParameters;
+    public static final String VERSION = "0.1";
+    public static final String SYNTHESIS = "Synthesis";
+    @JsonProperty
+    public final String board;
+    @JsonProperty
+    public final String topModule;
+    @JsonProperty
+    public final List<PinSpec> overrides;
+    @JsonProperty
+    public final Map<String, String> overrideParameters;
 
-	public SynthesisSettings() {
-		this(null, null, null, null);
-	}
+    public SynthesisSettings() {
+        this(null, null, null, null);
+    }
 
-	public SynthesisSettings(String board, String topModule, List<PinSpec> overrides, Map<String, String> overrideParameters) {
-		super(SYNTHESIS, VERSION);
-		this.board = board;
-		this.topModule = topModule;
-		this.overrides = overrides;
-		this.overrideParameters = overrideParameters;
-	}
+    public SynthesisSettings(String board, String topModule, List<PinSpec> overrides, Map<String, String> overrideParameters) {
+        super(SYNTHESIS, VERSION);
+        this.board = board;
+        this.topModule = topModule;
+        this.overrides = overrides;
+        this.overrideParameters = overrideParameters;
+    }
 
-	public static interface IOutputWriter {
-		public void append(Formatter f, PinSpec ps);
-	}
+    public static interface IOutputWriter {
+        public void append(Formatter f, PinSpec ps);
+    }
 
-	public String toString(String clockName, String rstName, BoardSpecSettings board, IOutputWriter writer) {
-		final Formatter f = new Formatter();
-		final Set<PinSpec> pinSpec = Sets.newLinkedHashSet();
-		for (final PinSpecGroup pg : board.pinGroups) {
-			pinSpec.addAll(pg.pins);
-		}
-		pinSpec.removeAll(overrides);
-		pinSpec.addAll(overrides);
-		for (final PinSpec ps : pinSpec) {
-			if (ps.assignedSignal != null) {
-				switch (ps.assignedSignal) {
-				case "$clk":
-					if (clockName != null) {
-						ps.assignedSignal = clockName;
-						writer.append(f, ps);
-					}
-					break;
-				case "$rst":
-					if (rstName != null) {
-						ps.assignedSignal = rstName;
-						writer.append(f, ps);
-					}
-					break;
-				default:
-					writer.append(f, ps);
-				}
-			}
-		}
-		final String string = f.toString();
-		return string;
-	}
+    public String toString(String clockName, String rstName, BoardSpecSettings board, IOutputWriter writer) {
+        final Formatter f = new Formatter();
+        final Set<PinSpec> pinSpec = Sets.newLinkedHashSet();
+        for (final PinSpecGroup pg : board.pinGroups) {
+            pinSpec.addAll(pg.pins);
+        }
+        pinSpec.removeAll(overrides);
+        pinSpec.addAll(overrides);
+        for (final PinSpec ps : pinSpec) {
+            if (ps.assignedSignal != null) {
+                switch (ps.assignedSignal) {
+                case "$clk":
+                    if (clockName != null) {
+                        ps.assignedSignal = clockName;
+                        writer.append(f, ps);
+                    }
+                    break;
+                case "$rst":
+                    if (rstName != null) {
+                        ps.assignedSignal = rstName;
+                        writer.append(f, ps);
+                    }
+                    break;
+                default:
+                    writer.append(f, ps);
+                }
+            }
+        }
+        final String string = f.toString();
+        return string;
+    }
 
-	public static class PDCWriter implements IOutputWriter {
+    public static class PDCWriter implements IOutputWriter {
 
-		@Override
-		public void append(Formatter f, PinSpec ps) {
-			f.format("# %s%n", ps.portName);
-			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
-			f.format("set_io {%s} -pinname %s ", assignedSignal, ps.pinLocation);
-			if (ps.attributes != null) {
-				for (final Entry<String, String> e : ps.attributes.entrySet()) {
-					switch (e.getKey()) {
-					case PinSpec.INVERT:
-						break;
-					case PinSpec.PULL:
-						if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-							f.format("-RES_PULL Down ");
-						}
-						if (PinSpec.PULL_UP.equals(e.getValue())) {
-							f.format("-RES_PULL Up ");
-						}
-						break;
-					case PinSpec.IOSTANDARD:
-						f.format("-iostd %s ", e.getValue());
-						break;
-					default:
-						if (PinSpec.NO_VALUE.equals(e.getValue())) {
-							f.format("-%s ", e.getKey());
-						} else {
-							f.format("-%s %s ", e.getKey(), e.getValue());
-						}
-					}
-				}
-			}
-			f.format("%n");
-		}
+        @Override
+        public void append(Formatter f, PinSpec ps) {
+            f.format("# %s%n", ps.portName);
+            final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
+            f.format("set_io {%s} -pinname %s ", assignedSignal, ps.pinLocation);
+            if (ps.attributes != null) {
+                for (final Entry<String, String> e : ps.attributes.entrySet()) {
+                    switch (e.getKey()) {
+                    case PinSpec.INVERT:
+                        break;
+                    case PinSpec.PULL:
+                        if (PinSpec.PULL_DOWN.equals(e.getValue())) {
+                            f.format("-RES_PULL Down ");
+                        }
+                        if (PinSpec.PULL_UP.equals(e.getValue())) {
+                            f.format("-RES_PULL Up ");
+                        }
+                        break;
+                    case PinSpec.IOSTANDARD:
+                        f.format("-iostd %s ", e.getValue());
+                        break;
+                    default:
+                        if (PinSpec.NO_VALUE.equals(e.getValue())) {
+                            f.format("-%s ", e.getKey());
+                        } else {
+                            f.format("-%s %s ", e.getKey(), e.getValue());
+                        }
+                    }
+                }
+            }
+            f.format("%n");
+        }
 
-	}
+    }
 
-	public static class UCFWriter implements IOutputWriter {
+    public static class UCFWriter implements IOutputWriter {
 
-		@Override
-		public void append(Formatter f, PinSpec ps) {
-			if (ps.pinLocation.charAt(0) == '#') {
-				f.format("# Not mapping %s%n", ps.assignedSignal);
-				return;
-			}
-			f.format("# %s -> %s%n", ps.portName, ps.assignedSignal);
-			final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
-			f.format("NET \"%s\" LOC=%s ", assignedSignal, ps.pinLocation);
-			if (ps.attributes != null) {
-				for (final Entry<String, String> e : ps.attributes.entrySet()) {
-					switch (e.getKey()) {
-					case PinSpec.INVERT:
-						break;
-					case PinSpec.PULL:
-						if (PinSpec.PULL_DOWN.equals(e.getValue())) {
-							f.format("| PULLDOWN ");
-						}
-						if (PinSpec.PULL_UP.equals(e.getValue())) {
-							f.format("| PULLUP ");
-						}
-						break;
-					default:
-						if (PinSpec.NO_VALUE.equals(e.getValue())) {
-							f.format("| %s ", e.getKey());
-						} else {
-							f.format("| %s = %s ", e.getKey(), e.getValue());
-						}
-					}
-				}
-			}
-			if (ps.timeSpec != null) {
-				f.format("| TNM_NET = \"%s\"", assignedSignal);
-			}
-			f.format(";%n");
-			if (ps.timeSpec != null) {
-				f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;%n", assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
-			}
-		}
-	}
+        @Override
+        public void append(Formatter f, PinSpec ps) {
+            if (ps.pinLocation.charAt(0) == '#') {
+                f.format("# Not mapping %s%n", ps.assignedSignal);
+                return;
+            }
+            f.format("# %s -> %s%n", ps.portName, ps.assignedSignal);
+            final String assignedSignal = ps.assignedSignal.replace('{', '[').replace('}', ']');
+            f.format("NET \"%s\" LOC=%s ", assignedSignal, ps.pinLocation);
+            if (ps.attributes != null) {
+                for (final Entry<String, String> e : ps.attributes.entrySet()) {
+                    switch (e.getKey()) {
+                    case PinSpec.INVERT:
+                        break;
+                    case PinSpec.PULL:
+                        if (PinSpec.PULL_DOWN.equals(e.getValue())) {
+                            f.format("| PULLDOWN ");
+                        }
+                        if (PinSpec.PULL_UP.equals(e.getValue())) {
+                            f.format("| PULLUP ");
+                        }
+                        break;
+                    default:
+                        if (PinSpec.NO_VALUE.equals(e.getValue())) {
+                            f.format("| %s ", e.getKey());
+                        } else {
+                            f.format("| %s = %s ", e.getKey(), e.getValue());
+                        }
+                    }
+                }
+            }
+            if (ps.timeSpec != null) {
+                f.format("| TNM_NET = \"%s\"", assignedSignal);
+            }
+            f.format(";%n");
+            if (ps.timeSpec != null) {
+                f.format("TIMESPEC \"ts_%s\" = PERIOD \"%<s\" %s %s;%n", assignedSignal, ps.timeSpec.time, ps.timeSpec.unit);
+            }
+        }
+    }
 
 }

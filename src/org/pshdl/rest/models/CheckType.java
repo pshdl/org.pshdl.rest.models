@@ -34,28 +34,28 @@ import org.pshdl.model.validation.Problem;
 
 @XmlEnum(String.class)
 public enum CheckType {
-	unknown, syntax_ok, ok, warnings, errors, syntax_error;
+    unknown, syntax_ok, ok, warnings, errors, syntax_error;
 
-	public static CheckType fromProblems(Set<Problem> problems) {
-		CheckType res = ok;
-		for (final Problem p : problems) {
-			if (p.isSyntax) {
-				res = syntax_error;
-			} else {
-				switch (p.severity) {
-				case ERROR:
-					res = errors;
-					break;
-				case WARNING:
-					if (res != errors) {
-						res = warnings;
-					}
-					break;
-				default:
-					break;
-				}
-			}
-		}
-		return res;
-	}
+    public static CheckType fromProblems(Set<Problem> problems) {
+        CheckType res = ok;
+        for (final Problem p : problems) {
+            if (p.isSyntax) {
+                res = syntax_error;
+            } else {
+                switch (p.severity) {
+                case ERROR:
+                    res = errors;
+                    break;
+                case WARNING:
+                    if (res != errors) {
+                        res = warnings;
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        return res;
+    }
 }

@@ -36,27 +36,27 @@ import com.google.common.collect.Maps;
 
 public class InteractiveMap {
 
-	@JsonProperty
-	public final String svg;
+    @JsonProperty
+    public final String svg;
 
-	@JsonProperty
-	public final Map<String, LinkedList<String>> idMaps;
+    @JsonProperty
+    public final Map<String, LinkedList<String>> idMaps;
 
-	public InteractiveMap() {
-		this(null, null);
-	}
+    public InteractiveMap() {
+        this(null, null);
+    }
 
-	public InteractiveMap(String svg, Map<String, ? extends Iterable<String>> idMaps) {
-		super();
-		this.svg = svg;
-		if (idMaps != null) {
-			this.idMaps = Maps.newLinkedHashMap();
-			for (final Entry<String, ? extends Iterable<String>> e : idMaps.entrySet()) {
-				this.idMaps.put(e.getKey(), Lists.newLinkedList(e.getValue()));
-			}
-		} else {
-			this.idMaps = null;
-		}
-	}
+    public InteractiveMap(String svg, Map<String, ? extends Iterable<String>> idMaps) {
+        super();
+        this.svg = svg;
+        if (idMaps != null) {
+            this.idMaps = Maps.newLinkedHashMap();
+            for (final Entry<String, ? extends Iterable<String>> e : idMaps.entrySet()) {
+                this.idMaps.put(e.getKey(), Lists.newLinkedList(e.getValue()));
+            }
+        } else {
+            this.idMaps = null;
+        }
+    }
 
 }

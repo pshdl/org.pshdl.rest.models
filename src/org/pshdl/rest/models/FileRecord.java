@@ -39,72 +39,77 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 @ApiModel("Information about addtional output files")
 public class FileRecord {
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The URL which can be used to retrieve the file")
-	public String fileURI;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "The URL which can be used to retrieve the file")
+    public String fileURI;
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The relative path where this file is located")
-	public String relPath;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "The relative path where this file is located")
+    public String relPath;
 
-	@JsonProperty
-	@ApiModelProperty(required = true, value = "The timestamp of the last modification")
-	public long lastModified;
+    @JsonProperty
+    @ApiModelProperty(required = true, value = "The timestamp of the last modification")
+    public long lastModified;
 
-	@JsonProperty
-	@ApiModelProperty(required = false, value = "The hash of the file")
-	public String hash;
+    @JsonProperty
+    @ApiModelProperty(required = false, value = "The hash of the file")
+    public String hash;
 
-	public FileRecord() {
-	}
+    public FileRecord() {
+    }
 
-	public FileRecord(File f, File relDir, String wid) throws IOException {
-		this.lastModified = f.lastModified();
-		this.relPath = relDir.toURI().relativize(f.toURI()).getPath();
-		updateURI(wid, relPath);
-		this.hash = Files.asByteSource(f).hash(Hashing.sha1()).toString();
-	}
+    public FileRecord(File f, File relDir, String wid) throws IOException {
+        this.lastModified = f.lastModified();
+        this.relPath = relDir.toURI().relativize(f.toURI()).getPath();
+        updateURI(wid, relPath);
+        this.hash = Files.asByteSource(f).hash(Hashing.sha1()).toString();
+    }
 
-	public void updateURI(String wid, String relPath) {
-		this.relPath = relPath;
-		this.fileURI = RestConstants.toWorkspaceURI(wid, relPath);
-	}
+    public void updateURI(String wid, String relPath) {
+        this.relPath = relPath;
+        this.fileURI = RestConstants.toWorkspaceURI(wid, relPath);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final FileRecord other = (FileRecord) obj;
-		if (fileURI == null) {
-			if (other.fileURI != null)
-				return false;
-		} else if (!fileURI.equals(other.fileURI))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FileRecord other = (FileRecord) obj;
+        if (fileURI == null) {
+            if (other.fileURI != null) {
+                return false;
+            }
+        } else if (!fileURI.equals(other.fileURI)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((fileURI == null) ? 0 : fileURI.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = (prime * result) + ((fileURI == null) ? 0 : fileURI.hashCode());
+        return result;
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("FileRecord [");
-		builder.append("fileURI=");
-		builder.append(fileURI);
-		builder.append(", relPath=");
-		builder.append(relPath);
-		builder.append("]");
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("FileRecord [");
+        builder.append("fileURI=");
+        builder.append(fileURI);
+        builder.append(", relPath=");
+        builder.append(relPath);
+        builder.append("]");
+        return builder.toString();
+    }
 
 }

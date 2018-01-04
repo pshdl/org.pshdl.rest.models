@@ -30,19 +30,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Settings {
 
-	@JsonProperty
-	public final String category;
-	@JsonProperty
-	public final String version;
+    @JsonProperty
+    public final String category;
+    @JsonProperty
+    public final String version;
 
-	public Settings() {
-		this(null, null);
-	}
+    public Settings() {
+        this(null, null);
+    }
 
-	public Settings(String category, String version) {
-		super();
-		this.category = category;
-		this.version = version;
-	}
+    public Settings(String category, String version) {
+        super();
+        this.category = category;
+        this.version = version;
+    }
 
 }
